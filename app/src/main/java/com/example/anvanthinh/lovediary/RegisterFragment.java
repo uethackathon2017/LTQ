@@ -22,9 +22,11 @@ import java.util.ArrayList;
 
 public class RegisterFragment extends Fragment implements View.OnClickListener {
     private IChangeToolbar mCallback;
+    private final String ACCOUNT = "Account";
     private EditText mName;
     private EditText mPass;
     private EditText mRePass;
+    private EditText mPhone;
     private Button mRemoveButton;
     private Button mRegisterButton;
     private DatabaseReference mReference;
@@ -39,23 +41,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         mRePass = (EditText) v.findViewById(R.id.repass);
         mRemoveButton = (Button) v.findViewById(R.id.remove);
         mRegisterButton = (Button) v.findViewById(R.id.register);
+        mPhone = (EditText)v.findViewById(R.id.phone);
         mRemoveButton.setOnClickListener(this);
         mRegisterButton.setOnClickListener(this);
         mNameAccounts = new ArrayList<String>();
         mReference = FirebaseDatabase.getInstance().getReference();
-//        mReference.child("Account").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-//                    String name = postSnapshot.getValue(Account.class).getName();
-//                    mNameAccounts.add(name);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//            }
-//        });
         new GetAccount().execute();
         return v;
     }
@@ -87,28 +77,37 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
 
     private void registerAccount() {
-        if ("".equals(mName.getText() + "") == false) {
+        if ("".equals(mName.getText() + "") == false && mNameAccounts.size() >0) {
             for (int i = 0; i < mNameAccounts.size(); i++) {
                 if ((mName.getText() + "").equals(mNameAccounts.get(i)) == true) {
-                    Toast.makeText(getActivity(), R.string.name_duplicate, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.name_duplicate), Toast.LENGTH_SHORT).show();
                     mName.requestFocus();
                     return;
                 }
             }
         } else if ("".equals(mName.getText() + "") == true) {
-            Toast.makeText(getActivity(), R.string.name_empty, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.name_empty), Toast.LENGTH_SHORT).show();
             mName.requestFocus();
             return;
-        } else if (4 >= (mPass.getText() + "").length()) {
+        } else if (3 >= (mPass.getText() + "").length()) {
             mPass.requestFocus();
-            Toast.makeText(getActivity(), R.string.little_pass, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.little_pass), Toast.LENGTH_SHORT).show();
             return;
         } else if ((mPass.getText() + "").equalsIgnoreCase(mRePass.getText() + "") == false) {
-            Toast.makeText(getActivity(), R.string.error_repass, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.error_repass), Toast.LENGTH_SHORT).show();
             mRePass.requestFocus();
             return;
+        } else if(10 != (mPhone.getText() + "").length() || 11 != (mPhone.getText() + "").length()){
+            mPhone.requestFocus();
+            Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.incorrect_number), Toast.LENGTH_SHORT).show();
+            return;
         }else{
-            Toast.makeText(getActivity(), R.string.register_success, Toast.LENGTH_SHORT).show();
+            Account acc = new Account();
+            acc.setName(mName.getText()+"");
+            acc.setPass(mPass.getText()+"");
+            acc.setPhone(mPhone.getText()+"");
+            mReference.child(ACCOUNT).push().setValue(acc);
+            Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.register_success), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -122,7 +121,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     private class GetAccount extends AsyncTask<Void, Void, ArrayList<String>> {
         @Override
         protected ArrayList<String> doInBackground(Void... params) {
-            mReference.child("Account").addValueEventListener(new ValueEventListener() {
+            mReference.child(ACCOUNT).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {

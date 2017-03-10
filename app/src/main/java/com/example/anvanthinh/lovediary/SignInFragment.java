@@ -2,6 +2,7 @@ package com.example.anvanthinh.lovediary;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 /**
  * Created by An Van Thinh on 3/10/2017.
@@ -25,7 +34,9 @@ public class SignInFragment extends Fragment implements View.OnClickListener, IC
     private IChangeToolbar mCallback;
     private SharedPreferences mSharedpreferences;
     private SharedPreferences.Editor mEditor;
-    private String mAccount;
+    private String mNameAccount;
+    private DatabaseReference mReference;
+    private ArrayList<Account> mAccounts;
 
     @Nullable
     @Override
@@ -37,6 +48,9 @@ public class SignInFragment extends Fragment implements View.OnClickListener, IC
         mRegister = (Button) v.findViewById(R.id.register);
         mRegister.setOnClickListener(this);
         mLogIn.setOnClickListener(this);
+        mAccounts = new ArrayList<Account>();
+        mReference = FirebaseDatabase.getInstance().getReference();
+        new GetAccount().execute();
         return v;
     }
 
@@ -44,14 +58,35 @@ public class SignInFragment extends Fragment implements View.OnClickListener, IC
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.sign_in:
-                mAccount = mName.getText()+"";
-                if("".equals(mAccount) == true){
+                mNameAccount = mName.getText()+"";
+                if("".equals(mNameAccount) == true){
                     Toast.makeText(getActivity(), R.string.name_empty, Toast.LENGTH_SHORT).show();
                     mName.requestFocus();
                     return;
+                }else if("".equals(mPass.getText()+"") == true){
+                    Toast.makeText(getActivity(), R.string.pass_empty, Toast.LENGTH_SHORT).show();
+                    mPass.requestFocus();
+                    return;
+                } else{
+                    for(int i = 0; i < mAccounts.size(); i++){
+                        if (mNameAccount.equals(mAccounts.get(i).getName()) == true){
+                            if((mPass.getText()+"").equals(mAccounts.get(i).getPass()) == true){
+                                Toast.makeText(getActivity(),"Dang nhap thanh cong", Toast.LENGTH_SHORT).show();
+                                return;
+                            }else{
+                                mPass.requestFocus();
+                                Toast.makeText(getActivity(), R.string.error_pass, Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }else{
+                            mName.requestFocus();
+                            Toast.makeText(getActivity(), R.string.no_account, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
                 }
                 mEditor = getActivity().getSharedPreferences(InitActivity.ACCOUNT, Context.MODE_PRIVATE).edit();
-                mEditor.putString(mAccount, InitActivity.ACCOUNT);
+                mEditor.putString(mNameAccount, InitActivity.ACCOUNT);
                 break;
             case R.id.register:
                 RegisterFragment fragment = new RegisterFragment();
@@ -77,4 +112,29 @@ public class SignInFragment extends Fragment implements View.OnClickListener, IC
     @Override
     public void changeTitle(String nameFragment) {
     }
+    private class GetAccount extends AsyncTask<Void, Void, ArrayList<Account>> {
+        @Override
+        protected ArrayList<Account> doInBackground(Void... params) {
+            mReference.child("Account").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        Account name = postSnapshot.getValue(Account.class);
+                        mAccounts.add(name);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                }
+            });
+            return mAccounts;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Account> accounts) {
+            super.onPostExecute(accounts);
+        }
+    }
+
 }
