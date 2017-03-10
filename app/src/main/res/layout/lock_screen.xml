@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <ImageView
+        android:background="@drawable/background_lock_screen"
+        android:alpha="0.8"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/layout_relative"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/bt_save_pass"
+            app:backgroundTint="@color/blue"
+            android:layout_width="wrap_content"
+            app:srcCompat="@drawable/btn_check"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:visibility="visible"
+            />
+
+        <com.andrognito.pinlockview.PinLockView
+            android:id="@+id/pin_lock_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bt_save_pass"
+            android:layout_alignParentBottom="true"
+            app:keypadButtonSize="72dp"
+            app:keypadTextSize="18dp"
+            android:layout_marginBottom="20dp"
+            app:keypadShowDeleteButton="true"
+            app:keypadTextColor="@color/white"
+            android:layout_centerHorizontal="true" />
+
+        <com.andrognito.pinlockview.IndicatorDots
+            android:id="@+id/indicator_dots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_above="@+id/pin_lock_view"
+            android:layout_marginBottom="30dp"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/text_pass"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/indicator_dots"
+            android:layout_marginBottom="50dp"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+    </RelativeLayout>
+
+
+</FrameLayout>

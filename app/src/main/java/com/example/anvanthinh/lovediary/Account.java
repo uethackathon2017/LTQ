@@ -3,8 +3,17 @@ package com.example.anvanthinh.lovediary;
 public class Account  {
     private String name;
     private String pass;
-    private String number;
-    private String subNumber;
+    private String phone;
+    private String subPhone;
+
+    public Account (){}
+
+    public Account (String name,String pass, String phone, String subPhone){
+        this.name = name;
+        this.pass = pass;
+        this.phone = phone;
+        this.subPhone = subPhone;
+    }
 
     public String getName() {
         return name;
@@ -22,19 +31,19 @@ public class Account  {
         this.pass = pass;
     }
 
-    public String getNumber() {
-        return number;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getSubNumber() {
-        return subNumber;
+    public String getSubPhone() {
+        return subPhone;
     }
 
-    public void setSubNumber(String subNumber) {
-        this.subNumber = subNumber;
+    public void setSubPhone(String subPhone) {
+        this.subPhone = subPhone;
     }
 }

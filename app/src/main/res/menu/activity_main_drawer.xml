@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/change_pass"
+        android:title="@string/change_password" />
+    <item
+        android:id="@+id/sync"
+        android:title="@string/sync" />
+    <item
+        android:id="@+id/set_time_write"
+        android:title="@string/set_time_write" />
+</menu>

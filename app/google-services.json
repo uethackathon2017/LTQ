@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "840048571789",
+    "firebase_url": "https://lovediary-ab1c0.firebaseio.com",
+    "project_id": "lovediary-ab1c0",
+    "storage_bucket": "lovediary-ab1c0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840048571789:android:4762f752c7022c60",
+        "android_client_info": {
+          "package_name": "com.example.anvanthinh.lovediary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "840048571789-nr3hbhclkf68notcob8tcrqh0knmqnae.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.anvanthinh.lovediary",
+            "certificate_hash": "4c6225c01f7c63090a1b1049daa868e060d3aba1"
+          }
+        },
+        {
+          "client_id": "840048571789-66bt7p5au4sk1295q8dble6jj6harigb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCg9n7skp5MwiKd5byIRan7RVEgQFCJHTA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "840048571789-66bt7p5au4sk1295q8dble6jj6harigb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

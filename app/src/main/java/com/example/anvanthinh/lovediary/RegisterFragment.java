@@ -11,9 +11,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
-public class RegisterFragment extends Fragment implements View.OnClickListener{
+public class RegisterFragment extends Fragment implements View.OnClickListener {
     private EditText mName;
     private EditText mPass;
     private EditText mRePass;
@@ -22,19 +28,43 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
     private Button mRemoveButton;
     private Button mRegisterButton;
     private ArrayList<Account> mArrAccount;
+    FirebaseDatabase mFireDatabasec;
+    DatabaseReference mReference;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.register_fragment, container, false);
-        mName = (EditText)v.findViewById(R.id.name);
-        mPass = (EditText)v.findViewById(R.id.pass);
-        mRePass = (EditText)v.findViewById(R.id.repass);
-        mPhone = (EditText)v.findViewById(R.id.phone);
-        mSubPhone = (EditText)v.findViewById(R.id.subphone);
-        mRemoveButton = (Button)v.findViewById(R.id.remove);
-        mRegisterButton = (Button)v.findViewById(R.id.register);
+        mName = (EditText) v.findViewById(R.id.name);
+        mPass = (EditText) v.findViewById(R.id.pass);
+        mRePass = (EditText) v.findViewById(R.id.repass);
+        mPhone = (EditText) v.findViewById(R.id.phone);
+        mSubPhone = (EditText) v.findViewById(R.id.subphone);
+        mRemoveButton = (Button) v.findViewById(R.id.remove);
+        mRegisterButton = (Button) v.findViewById(R.id.register);
         mRemoveButton.setOnClickListener(this);
         mRegisterButton.setOnClickListener(this);
+
+        mReference = FirebaseDatabase.getInstance().getReference();
+        Account account = new Account("test2","123", "0912345678", "0912345678");
+        mReference.child("Account").child("test2").setValue(account);
+
+        mReference = FirebaseDatabase.getInstance().getReference();
+        mReference.child("Account").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot i: dataSnapshot.getChildren()){
+                    Account value = dataSnapshot.getValue(Account.class);
+                    Toast.makeText(getActivity(), value.getName(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+            }
+        });
         // get phone number
 //        TelephonyManager telemamanger = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
 //        String getSimSerialNumber = telemamanger.getSimSerialNumber();
@@ -50,21 +80,21 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.remove:
                 removeInfor();
                 break;
             case R.id.register:
-                if((mPass.getText()+"").equalsIgnoreCase(mRePass.getText()+"") == false){
+                if ((mPass.getText() + "").equalsIgnoreCase(mRePass.getText() + "") == false) {
                     Toast.makeText(getActivity(), R.string.error_pass, Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
 
                 }
                 break;
         }
     }
 
-    public void removeInfor(){
+    public void removeInfor() {
         mName.setText("");
         mPass.setText("");
         mRePass.setText("");
@@ -73,7 +103,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
         mName.requestFocus();
     }
 
-    private class GetAccount extends AsyncTask <Void, Void, ArrayList<Account>>{
+    private class GetAccount extends AsyncTask<Void, Void, ArrayList<Account>> {
 
         @Override
         protected ArrayList<Account> doInBackground(Void... params) {

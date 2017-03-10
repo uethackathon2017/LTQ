@@ -1,0 +1,107 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/itemview"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/story_item_frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/contact_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/title_story"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/paperclip"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="5dp"
+                    android:textSize="20sp"
+                    android:lines="1"
+                    android:text="title_story"
+                    android:includeFontPadding="false"
+                    android:typeface="sans" />
+
+                <ImageView
+                    android:id="@+id/paperclip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_attachment_holo_light"
+                    android:layout_alignTop="@+id/title_story"
+                    android:visibility="invisible"
+                    android:layout_alignParentEnd="true" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <ImageView
+                    android:id="@+id/star"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="3dp"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_btn_star_off" />
+
+                <TextView
+                    android:id="@+id/snippet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/star"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="3dp"
+                    android:includeFontPadding="false"
+                    android:text="day la noi dung"
+                    android:lines="2"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:typeface="sans" />
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:lines="1"
+                    android:layout_below="@+id/snippet"
+                    android:text="02/11/2995"
+                    android:textColor="@color/blue"
+                    android:includeFontPadding="false"
+                    android:layout_alignParentRight="true" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/border_textiew" />
+
+</LinearLayout>

@@ -1,6 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LoveDiary</string>
+    <string name="click_to_show">Click to show</string>
+    <string name="password_correct">Password correct</string>
+    <string name="password_incorrect">Password incorrect</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="change_password">Set Password</string>
+    <string name="compose_title">Compose</string>
+    <string name="enter_new_password">Nhập mật khẩu mới</string>
+    <string name="enter_old_password">Nhập mật khẩu cũ</string>
+    <string name="error_pass">Mật khẩu không đúng</string>
+    <string name="enter_repeat_pass">Nhập lại mật khẩu mới</string>
+    <string name="set_pass_succes">Đổi mật khẩu thành công</string>
+    <string name="title_hint">Tiêu đề</string>
+    <string name="content_hint">Nội dung nhật kí</string>
+    <string name="set_time_write">Hẹn thời gian viết</string>
+    <string name="sync">Đồng bộ dữ liệu</string>
     <string name="name_register">Tên tài khoản</string>
     <string name="pass_register">Mật khẩu</string>
     <string name="repass_register">Nhập lại mật khẩu</string>
@@ -11,5 +26,4 @@
     <string name="empty_title">Bạn chưa nhập tiêu đề</string>
     <string name="empty_content">Bạn chưa nhập nội dung</string>
     <string name="tittle_register">Đăng kí tài khoản</string>
-    <string name="error_pass">Mật khẩu không đúng</string>
 </resources>
