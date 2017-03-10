@@ -31,4 +31,6 @@
     <string name="name_empty">Bạn chưa nhập tên tài khoản</string>
     <string name="little_pass">Mật khẩu phải có ít nhất 4 kí tự</string>
     <string name="register_success">Tạo tài khoản thành công</string>
+    <string name="tittle_sign">Đăng nhập</string>
+    <string name="sign_in">Đăng nhập</string>
 </resources>
