@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoveDiary</string>
+    <string name="name_register">Tên tài khoản</string>
+    <string name="pass_register">Mật khẩu</string>
+    <string name="repass_register">Nhập lại mật khẩu</string>
+    <string name="phone_register">Số điện thoại của bạn</string>
+    <string name="subphone_register">Số điện thoại của nửa kia</string>
+    <string name="remove_register">Xóa thông tin</string>
+    <string name="register">Đăng kí</string>
+    <string name="empty_title">Bạn chưa nhập tiêu đề</string>
+    <string name="empty_content">Bạn chưa nhập nội dung</string>
+    <string name="tittle_register">Đăng kí tài khoản</string>
+    <string name="error_pass">Mật khẩu không đúng</string>
+</resources>
