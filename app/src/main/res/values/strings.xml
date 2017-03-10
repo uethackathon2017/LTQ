@@ -26,4 +26,9 @@
     <string name="empty_title">Bạn chưa nhập tiêu đề</string>
     <string name="empty_content">Bạn chưa nhập nội dung</string>
     <string name="tittle_register">Đăng kí tài khoản</string>
+    <string name="error_repass">Mật khẩu nhập lại không đúng</string>
+    <string name="name_duplicate">Tên đăng kí bị trùng</string>
+    <string name="name_empty">Bạn chưa nhập tên tài khoản</string>
+    <string name="little_pass">Mật khẩu phải có ít nhất 4 kí tự</string>
+    <string name="register_success">Tạo tài khoản thành công</string>
 </resources>

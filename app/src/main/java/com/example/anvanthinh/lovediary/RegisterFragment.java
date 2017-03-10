@@ -23,13 +23,10 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     private EditText mName;
     private EditText mPass;
     private EditText mRePass;
-    private EditText mPhone;
-    private EditText mSubPhone;
     private Button mRemoveButton;
     private Button mRegisterButton;
-    private ArrayList<Account> mArrAccount;
-    FirebaseDatabase mFireDatabasec;
-    DatabaseReference mReference;
+    private DatabaseReference mReference;
+    private ArrayList<String> mNameAccounts;
 
     @Nullable
     @Override
@@ -38,37 +35,27 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         mName = (EditText) v.findViewById(R.id.name);
         mPass = (EditText) v.findViewById(R.id.pass);
         mRePass = (EditText) v.findViewById(R.id.repass);
-        mPhone = (EditText) v.findViewById(R.id.phone);
-        mSubPhone = (EditText) v.findViewById(R.id.subphone);
         mRemoveButton = (Button) v.findViewById(R.id.remove);
         mRegisterButton = (Button) v.findViewById(R.id.register);
         mRemoveButton.setOnClickListener(this);
         mRegisterButton.setOnClickListener(this);
-
-        mReference = FirebaseDatabase.getInstance().getReference();
-        Account account = new Account("test2","123", "0912345678", "0912345678");
-        mReference.child("Account").child("test2").setValue(account);
-
+        mNameAccounts = new ArrayList<String>();
         mReference = FirebaseDatabase.getInstance().getReference();
         mReference.child("Account").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot i: dataSnapshot.getChildren()){
-                    Account value = dataSnapshot.getValue(Account.class);
-                    Toast.makeText(getActivity(), value.getName(), Toast.LENGTH_SHORT).show();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    String name = postSnapshot.getValue(Account.class).getName();
+                    mNameAccounts.add(name);
                 }
-
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // Failed to read value
             }
         });
-        // get phone number
-//        TelephonyManager telemamanger = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-//        String getSimSerialNumber = telemamanger.getSimSerialNumber();
-//        mSubPhone.setText(getSimSerialNumber);
+
+        new GetAccount().execute();
         return v;
     }
 
@@ -85,12 +72,31 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 removeInfor();
                 break;
             case R.id.register:
-                if ((mPass.getText() + "").equalsIgnoreCase(mRePass.getText() + "") == false) {
-                    Toast.makeText(getActivity(), R.string.error_pass, Toast.LENGTH_SHORT).show();
-                } else {
-
-                }
+                registerAccount();
                 break;
+        }
+    }
+
+    private void registerAccount() {
+        if ("".equals(mName.getText() + "") == false) {
+            for (int i = 0; i < mNameAccounts.size(); i++) {
+                if ((mName.getText() + "").equals(mNameAccounts.get(i)) == true) {
+                    Toast.makeText(getActivity(), R.string.name_duplicate, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+        } else if ("".equals(mName.getText() + "") == true) {
+            Toast.makeText(getActivity(), R.string.name_empty, Toast.LENGTH_SHORT).show();
+            return;
+        } else if (4 >= (mPass.getText() + "").length()) {
+            Toast.makeText(getActivity(), R.string.little_pass, Toast.LENGTH_SHORT).show();
+            return;
+        } else if ((mPass.getText() + "").equalsIgnoreCase(mRePass.getText() + "") == false) {
+            Toast.makeText(getActivity(), R.string.error_repass, Toast.LENGTH_SHORT).show();
+            mPass.requestFocus();
+            return;
+        }else{
+            Toast.makeText(getActivity(), R.string.register_success, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -98,20 +104,32 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         mName.setText("");
         mPass.setText("");
         mRePass.setText("");
-        mPhone.setText("");
-        mSubPhone.setText("");
         mName.requestFocus();
     }
 
-    private class GetAccount extends AsyncTask<Void, Void, ArrayList<Account>> {
-
+    private class GetAccount extends AsyncTask<Void, Void, ArrayList<String>> {
         @Override
-        protected ArrayList<Account> doInBackground(Void... params) {
-            return null;
+        protected ArrayList<String> doInBackground(Void... params) {
+            final ArrayList<String> arr = new ArrayList<String>();
+            mReference.child("Account").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        String name = postSnapshot.getValue(Account.class).getName();
+                        arr.add(name);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                }
+            });
+            return arr;
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Account> accounts) {
+        protected void onPostExecute(ArrayList<String> accounts) {
+//            mNameAccounts.addAll(accounts);
             super.onPostExecute(accounts);
         }
     }

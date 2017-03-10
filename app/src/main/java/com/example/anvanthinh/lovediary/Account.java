@@ -3,16 +3,12 @@ package com.example.anvanthinh.lovediary;
 public class Account  {
     private String name;
     private String pass;
-    private String phone;
-    private String subPhone;
 
     public Account (){}
 
-    public Account (String name,String pass, String phone, String subPhone){
+    public Account (String name,String pass){
         this.name = name;
         this.pass = pass;
-        this.phone = phone;
-        this.subPhone = subPhone;
     }
 
     public String getName() {
@@ -31,19 +27,4 @@ public class Account  {
         this.pass = pass;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getSubPhone() {
-        return subPhone;
-    }
-
-    public void setSubPhone(String subPhone) {
-        this.subPhone = subPhone;
-    }
 }
