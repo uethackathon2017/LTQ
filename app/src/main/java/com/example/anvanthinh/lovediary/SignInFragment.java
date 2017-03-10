@@ -21,12 +21,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-/**
- * Created by An Van Thinh on 3/10/2017.
- */
-
-public class SignInFragment extends Fragment implements View.OnClickListener, IChangeToolbar{
+public class SignInFragment extends Fragment implements View.OnClickListener, IChangeToolbar {
     public static final String TAG = "tag";
+    public final static String ACCOUNT = "account";
+    public final static String ACCOUNT_NAME = "account_name";
+    public final static String ACCOUNT_PASS = "account_pass";
+    public final static String ACCOUNT_PHONE = "account_phone";
+    public static final String SEX = "sex";
     private EditText mName;
     private EditText mPass;
     private Button mLogIn;
@@ -42,8 +43,8 @@ public class SignInFragment extends Fragment implements View.OnClickListener, IC
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.sign_in_fragment, container, false);
-        mName = (EditText)v.findViewById(R.id.name);
-        mPass = (EditText)v.findViewById(R.id.pass);
+        mName = (EditText) v.findViewById(R.id.name);
+        mPass = (EditText) v.findViewById(R.id.pass);
         mLogIn = (Button) v.findViewById(R.id.sign_in);
         mRegister = (Button) v.findViewById(R.id.register);
         mRegister.setOnClickListener(this);
@@ -56,42 +57,44 @@ public class SignInFragment extends Fragment implements View.OnClickListener, IC
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.sign_in:
-                mNameAccount = mName.getText()+"";
-                if("".equals(mNameAccount) == true){
-                    Toast.makeText(getActivity(), R.string.name_empty, Toast.LENGTH_SHORT).show();
+                mNameAccount = mName.getText() + "";
+                if ("".equals(mNameAccount) == true) {
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.name_empty), Toast.LENGTH_SHORT).show();
                     mName.requestFocus();
                     return;
-                }else if("".equals(mPass.getText()+"") == true){
-                    Toast.makeText(getActivity(), R.string.pass_empty, Toast.LENGTH_SHORT).show();
+                } else if ("".equals(mPass.getText() + "") == true) {
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.pass_empty), Toast.LENGTH_SHORT).show();
                     mPass.requestFocus();
                     return;
-                } else{
-                    for(int i = 0; i < mAccounts.size(); i++){
-                        if (mNameAccount.equals(mAccounts.get(i).getName()) == true){
-                            if((mPass.getText()+"").equals(mAccounts.get(i).getPass()) == true){
-                                Toast.makeText(getActivity(),"Dang nhap thanh cong", Toast.LENGTH_SHORT).show();
+                } else {
+                    for (int i = 0; i < mAccounts.size(); i++) {
+                        if (mNameAccount.equals(mAccounts.get(i).getName()) == true) {
+                            if ((mPass.getText() + "").equals(mAccounts.get(i).getPass()) == true) {
+                                //showSexDialog();
+                                SexDialog dialog = new SexDialog(getActivity());
+                                dialog.setName(mNameAccount);
+                                dialog.setPass(mPass.getText() + "");
+                                dialog.show();
                                 return;
-                            }else{
+                            } else {
                                 mPass.requestFocus();
-                                Toast.makeText(getActivity(), R.string.error_pass, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.error_pass), Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                        }else{
+                        } else {
                             mName.requestFocus();
-                            Toast.makeText(getActivity(), R.string.no_account, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.no_account), Toast.LENGTH_SHORT).show();
                             return;
                         }
                     }
                 }
-                mEditor = getActivity().getSharedPreferences(InitActivity.ACCOUNT, Context.MODE_PRIVATE).edit();
-                mEditor.putString(mNameAccount, InitActivity.ACCOUNT);
                 break;
             case R.id.register:
                 RegisterFragment fragment = new RegisterFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.init_main, fragment)
-                .addToBackStack(TAG).commit();
+                        .addToBackStack(TAG).commit();
                 String title = getActivity().getResources().getString(R.string.tittle_register);
                 mCallback.changeTitle(title);
                 break;
@@ -112,6 +115,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener, IC
     @Override
     public void changeTitle(String nameFragment) {
     }
+
     private class GetAccount extends AsyncTask<Void, Void, ArrayList<Account>> {
         @Override
         protected ArrayList<Account> doInBackground(Void... params) {

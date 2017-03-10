@@ -77,6 +77,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
 
     private void registerAccount() {
+        int phoneLength = (mPhone.getText() + "").length();
         if ("".equals(mName.getText() + "") == false && mNameAccounts.size() >0) {
             for (int i = 0; i < mNameAccounts.size(); i++) {
                 if ((mName.getText() + "").equals(mNameAccounts.get(i)) == true) {
@@ -97,7 +98,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.error_repass), Toast.LENGTH_SHORT).show();
             mRePass.requestFocus();
             return;
-        } else if(10 != (mPhone.getText() + "").length() || 11 != (mPhone.getText() + "").length()){
+        } else if( phoneLength < 10 || phoneLength > 11){
             mPhone.requestFocus();
             Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.incorrect_number), Toast.LENGTH_SHORT).show();
             return;
@@ -107,6 +108,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             acc.setPass(mPass.getText()+"");
             acc.setPhone(mPhone.getText()+"");
             mReference.child(ACCOUNT).push().setValue(acc);
+            removeInfor();
             Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.register_success), Toast.LENGTH_SHORT).show();
         }
     }
@@ -115,6 +117,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         mName.setText("");
         mPass.setText("");
         mRePass.setText("");
+        mPhone.setText("");
         mName.requestFocus();
     }
 

@@ -1,7 +1,5 @@
 package com.example.anvanthinh.lovediary;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -14,8 +12,6 @@ import android.view.MenuItem;
 
 public class InitActivity extends AppCompatActivity implements IChangeToolbar {
     public final static  String ACCOUNT = "account";
-    private SharedPreferences mSharedpreferences;
-    private SharedPreferences.Editor mEditor;
     private Toolbar mToolbar;
 
     @Override
@@ -27,7 +23,6 @@ public class InitActivity extends AppCompatActivity implements IChangeToolbar {
         getSupportActionBar().setTitle(R.string.tittle_sign);
         SignInFragment fragment = new SignInFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.init_main, fragment).commit();
-        mSharedpreferences = getSharedPreferences(ACCOUNT, Context.MODE_PRIVATE);
     }
 
     @Override

@@ -35,4 +35,7 @@
     <string name="no_account">Không tồn tại tài khoản</string>
     <string name="pass_empty">Bạn chưa điền mật khẩu</string>
     <string name="incorrect_number">Số điện thoại chỉ có 10 hoặc 11 số</string>
+    <string name="you_are">Bạn là?</string>
+    <string name="man">Nam</string>
+    <string name="woman">Nữ</string>
 </resources>
