@@ -3,6 +3,7 @@
     package="com.example.anvanthinh.lovediary">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,6 +26,7 @@
         <activity android:name=".InitActivity"></activity>
         <activity android:name=".LockScreen"></activity>
         <activity android:name=".ComposeActivity"></activity>
+        <service android:name=".SyncService"></service>
 
     </application>
 
