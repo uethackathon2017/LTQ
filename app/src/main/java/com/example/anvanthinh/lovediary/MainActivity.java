@@ -1,8 +1,10 @@
 package com.example.anvanthinh.lovediary;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -10,23 +12,19 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.anvanthinh.lovediary.controller.ActivityController;
 import com.example.anvanthinh.lovediary.controller.OnePaneController;
 import com.example.anvanthinh.lovediary.controller.TwoPaneController;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.example.anvanthinh.lovediary.database.Story;
+import com.example.anvanthinh.lovediary.database.StoryHelper;
+import com.example.anvanthinh.lovediary.database.StoryProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.Calendar;
-import java.util.TimeZone;
 
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener{
     protected static final int STORY_LOADER = 0;
     protected static  final String LOCKSCREEN = "lock_screen" ;
     protected static  final int SET_PASS = 0 ;
@@ -36,11 +34,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected static final String GET_PASS = "get_password";
     private static final String ACCOUNT = "account";
     private static final String SEX = "sex";
+    private static final String STORY = "Story";
     private ActivityController mController;
     private boolean isTablet = false;
     private SharedPreferences mSharedpreferences;
     private SharedPreferences.Editor mEditor;
     private  DatabaseReference mReference;
+    private  String mNameAccount;
 
 
     @Override
@@ -48,8 +48,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mSharedpreferences = getSharedPreferences(SignInFragment.ACCOUNT, Context.MODE_PRIVATE);
-        String name = mSharedpreferences.getString(SignInFragment.ACCOUNT_NAME, "");
-        if( "".equals(name) == true){
+        mNameAccount = mSharedpreferences.getString(SignInFragment.ACCOUNT_NAME, "");
+        if( "".equals(mNameAccount) == true){
             Intent i = new Intent(MainActivity.this, InitActivity.class);
             startActivity(i);
         }
@@ -125,24 +125,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(i);
                 break;
             case R.id.sync:
-                new PushData().execute();
-                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                database.child(ACCOUNT).orderByChild("pass").equalTo("12345").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot i : dataSnapshot.getChildren()){
-                            Account a = i.getValue(Account.class);
-                            Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-                            Log.d("thinhavb", a.getName() + " - " + calendar.getTimeInMillis());
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                new PushStory().execute();
                 break;
             case R.id.set_time_write:
                 break;
@@ -152,35 +135,36 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         return true;
     }
 
-    // kiem tra xem tai khoan da dang nhap chua
-    protected void checkAccount(){
-        mSharedpreferences = getSharedPreferences(ACCOUNT, Context.MODE_PRIVATE);
-        boolean account = mSharedpreferences.getBoolean(ACCOUNT, false);
-        if(account == true){
-
-        }else{
-
-        }
-    }
-
-    // kiem tra nguoi dang nhap la nam hay nu
-    protected  void checkSex(){
-        mSharedpreferences = getSharedPreferences(SEX, Context.MODE_PRIVATE);
-        boolean sex = mSharedpreferences.getBoolean(SEX, false);
-        if(sex == true){
-
-        }else{
-
-        }
-    }
-
-    // lop day du lieu len server
-    private class PushData extends AsyncTask<Void, Void, Void>{
+    private class PushStory extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
+            String selection = StoryHelper.COLUMN_SYNC + " =?";
+            String[] selectionArgs = new String[] {"0"};
+            String[] projection = new String[] {
+                    StoryHelper.COLUMN_ID, StoryHelper.COLUMN_TITTLE, StoryHelper.COLUMN_CONTENT, StoryHelper.COLUMN_DATE,
+                    StoryHelper.COLUMN_LIKE, StoryHelper.COLUMN_PAPER_CLIP, StoryHelper.COLUMN_POSTER, StoryHelper.COLUMN_SYNC
+            };
+            Cursor c = getContentResolver().query(StoryProvider.STORY_URI, projection, null, null, null);
+            int a = c.getCount();
             mReference = FirebaseDatabase.getInstance().getReference();
+            for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()){
+                if(c.getInt(c.getColumnIndex(StoryHelper.COLUMN_SYNC)) == 0){
+                    Story s = new Story();
+                    s.setId(c.getString(c.getColumnIndex(StoryHelper.COLUMN_ID)));
+                    s.setTitle(c.getString(c.getColumnIndex(StoryHelper.COLUMN_TITTLE)));
+                    s.setContent(c.getString(c.getColumnIndex(StoryHelper.COLUMN_CONTENT)));
+                    s.setDate(c.getLong(c.getColumnIndex(StoryHelper.COLUMN_DATE)));
+                    s.setAttach(c.getInt(c.getColumnIndex(StoryHelper.COLUMN_PAPER_CLIP)));
+                    s.setPoster(c.getInt(c.getColumnIndex(StoryHelper.COLUMN_POSTER)));
+                    mReference.child(STORY).child(mNameAccount).push().setValue(s);
+                    ContentValues valuse = new ContentValues();
+                    valuse.put(StoryHelper.COLUMN_SYNC , 1);
+                    String id = c.getString(c.getColumnIndex(StoryHelper.COLUMN_ID));
+                    getContentResolver().update(StoryProvider.STORY_URI, valuse, StoryHelper.COLUMN_ID  +  " =? ", new String[] {id});
+                }
 
+            }
             return null;
         }
     }

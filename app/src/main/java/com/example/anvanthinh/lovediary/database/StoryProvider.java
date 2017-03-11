@@ -71,7 +71,6 @@ public class StoryProvider extends ContentProvider {
         SQLiteDatabase db = database.getWritableDatabase();
         Cursor cursor = queryBuilder.query(db, projection, selection,
                 selectionArgs, null, null, sortOrder);
-        // make sure that potential listeners are getting notified
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
@@ -172,6 +171,7 @@ public class StoryProvider extends ContentProvider {
     private void checkColumns(String[] projection) {
         String[] available = { StoryHelper.COLUMN_ID,StoryHelper.COLUMN_TITTLE,StoryHelper.COLUMN_CONTENT,
                 StoryHelper.COLUMN_DATE,StoryHelper.COLUMN_LIKE,StoryHelper.COLUMN_PAPER_CLIP, StoryHelper.COLUMN_POSTER
+                , StoryHelper.COLUMN_SYNC
         };
         if (projection != null) {
             HashSet<String> requestedColumns = new HashSet<String>(

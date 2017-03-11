@@ -15,11 +15,11 @@ public class StoryModel  {
     }
 
     // ham lay toan bo story trong sqlite
-    protected ArrayList<Story> getAllStory(){
+    public ArrayList<Story> getAllStory(){
         ArrayList<Story> arrStory = new ArrayList<Story>();
         String[] projection = new String[] {
                 StoryHelper.COLUMN_ID, StoryHelper.COLUMN_TITTLE, StoryHelper.COLUMN_CONTENT, StoryHelper.COLUMN_DATE,
-                StoryHelper.COLUMN_LIKE, StoryHelper.COLUMN_PAPER_CLIP, StoryHelper.COLUMN_POSTER
+                StoryHelper.COLUMN_LIKE, StoryHelper.COLUMN_PAPER_CLIP, StoryHelper.COLUMN_POSTER, StoryHelper.COLUMN_SYNC
         };
         String sortOder = StoryHelper.COLUMN_DATE + " ASC";
         Cursor c = mContext.getContentResolver().query(StoryProvider.STORY_URI , projection ,
