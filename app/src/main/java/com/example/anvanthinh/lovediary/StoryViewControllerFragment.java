@@ -33,22 +33,15 @@ public class StoryViewControllerFragment extends Fragment implements View.OnClic
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.story_pager_controller, container, false);
         mViewPager = (ViewPager)v.findViewById(R.id.story_pager_cotroller);
+        mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         isTablet = getResources().getBoolean(R.bool.isTablet);
-
         if (isTablet == false) {
             mPosition = getArguments().getInt(StoryAdapter.ID_STORY);
             mViewPager.setCurrentItem(mPosition);
         } else if(isTablet == true) {
-            IntentFilter mIntentFilter = new IntentFilter(StoryAdapter.DOC_NOI_DUNG);
-            mReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    mPosition = intent.getIntExtra(StoryAdapter.ID_STORY , 0);
-                    mViewPager.setCurrentItem(mPosition);
-                }
-            };
-            getContext().registerReceiver(mReceiver, mIntentFilter);
+
         }
+
         return v;
     }
 
@@ -59,11 +52,30 @@ public class StoryViewControllerFragment extends Fragment implements View.OnClic
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter mIntentFilter = new IntentFilter(StoryAdapter.DOC_NOI_DUNG);
+        mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mPosition = intent.getIntExtra(StoryAdapter.ID_STORY , 0);
+                mViewPager.setCurrentItem(mPosition);
+            }
+        };
+        getContext().registerReceiver(mReceiver, mIntentFilter);
+    }
+
+    @Override
     public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
         if (isTablet == true) {
             getContext().unregisterReceiver(mReceiver);
         }
-        super.onPause();
     }
 
     @Override
@@ -84,9 +96,10 @@ public class StoryViewControllerFragment extends Fragment implements View.OnClic
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        StoryPagerAdapter mAdapter = new StoryPagerAdapter(getActivity().getSupportFragmentManager(), getActivity(), cursor);
-        mViewPager.setAdapter(mAdapter);
-        mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        if (cursor != null){
+            StoryPagerAdapter mAdapter = new StoryPagerAdapter(getActivity().getSupportFragmentManager(), getActivity(), cursor);
+            mViewPager.setAdapter(mAdapter);
+        }
 
     }
 

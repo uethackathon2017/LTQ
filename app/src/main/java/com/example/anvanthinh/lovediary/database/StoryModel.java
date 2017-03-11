@@ -49,6 +49,18 @@ public class StoryModel  {
         mContext.getContentResolver().insert(StoryProvider.STORY_URI , values);
     }
 
+    public void InsertStorySync (Story s){
+        ContentValues values = new ContentValues();
+        values.put(StoryHelper.COLUMN_TITTLE , s.getTitle());
+        values.put(StoryHelper.COLUMN_CONTENT , s.getContent());
+        values.put(StoryHelper.COLUMN_DATE , s.getDate());
+        values.put(StoryHelper.COLUMN_LIKE , s.getLike());
+        values.put(StoryHelper.COLUMN_PAPER_CLIP , s.getAttach());
+        values.put(StoryHelper.COLUMN_POSTER , s.getPoster());
+        values.put(StoryHelper.COLUMN_SYNC , 1);
+        mContext.getContentResolver().insert(StoryProvider.STORY_URI , values);
+    }
+
     public Story getInforStory (Cursor c){
         Story s = new Story();
         s.setId(c.getString(c.getColumnIndex(StoryHelper.COLUMN_ID)));

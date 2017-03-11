@@ -164,8 +164,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     StoryHelper.COLUMN_LIKE, StoryHelper.COLUMN_PAPER_CLIP, StoryHelper.COLUMN_POSTER, StoryHelper.COLUMN_SYNC
             };
             Cursor c = getContentResolver().query(StoryProvider.STORY_URI, projection, null, null, null);
+
             mReference = FirebaseDatabase.getInstance().getReference();
             for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()){
+                Log.d("thinhavb", "sync = " + c.getInt(c.getColumnIndex(StoryHelper.COLUMN_SYNC)));
                 if(c.getInt(c.getColumnIndex(StoryHelper.COLUMN_SYNC)) == 0){
                     Story s = new Story();
                     s.setId(c.getString(c.getColumnIndex(StoryHelper.COLUMN_ID)));
@@ -174,13 +176,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     s.setDate(c.getLong(c.getColumnIndex(StoryHelper.COLUMN_DATE)));
                     s.setAttach(c.getInt(c.getColumnIndex(StoryHelper.COLUMN_PAPER_CLIP)));
                     s.setPoster(c.getInt(c.getColumnIndex(StoryHelper.COLUMN_POSTER)));
+                    Log.d("thinhavb", s.getId());
                     mReference.child(STORY).child(mNameAccount).push().setValue(s);
                     ContentValues valuse = new ContentValues();
                     valuse.put(StoryHelper.COLUMN_SYNC , 1);
                     String id = c.getString(c.getColumnIndex(StoryHelper.COLUMN_ID));
                     getContentResolver().update(StoryProvider.STORY_URI, valuse, StoryHelper.COLUMN_ID  +  " LIKE ? ", new String[] {id});
+                    Log.d("thinhavb", "id : "+ s.getId() + "name : " + c.getInt(c.getColumnIndex(StoryHelper.COLUMN_SYNC)));
                 }
-
             }
             return null;
         }
@@ -201,10 +204,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mReference.child(STORY).child(mNameAccount).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    getContentResolver().delete(StoryProvider.STORY_URI,null, null);
                     for(DataSnapshot data: dataSnapshot.getChildren()){
                         Story s = data.getValue(Story.class);
+                        Log.d("thinhavb", "id = " + s.getId());
                         StoryModel model = new StoryModel(MainActivity.this);
-                        model.insert_story(s);
+                        model.InsertStorySync(s);
+                        Log.d("thinhavb", "key = " + data.getKey());
                     }
                 }
 
