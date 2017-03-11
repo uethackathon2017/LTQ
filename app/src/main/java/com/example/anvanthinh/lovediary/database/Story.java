@@ -6,6 +6,7 @@ import java.io.Serializable;
 public class Story implements Serializable {
     private String id;
     private String title;
+    private String key;
     private String content;
     private long date;
     private int poster;
@@ -69,4 +70,11 @@ public class Story implements Serializable {
         this.attach = attach;
     }
 
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 }

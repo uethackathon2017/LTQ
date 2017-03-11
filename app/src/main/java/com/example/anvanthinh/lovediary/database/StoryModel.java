@@ -57,6 +57,7 @@ public class StoryModel  {
         values.put(StoryHelper.COLUMN_LIKE , s.getLike());
         values.put(StoryHelper.COLUMN_PAPER_CLIP , s.getAttach());
         values.put(StoryHelper.COLUMN_POSTER , s.getPoster());
+        values.put(StoryHelper.COLUMN_KEY , s.getKey());
         values.put(StoryHelper.COLUMN_SYNC , 1);
         mContext.getContentResolver().insert(StoryProvider.STORY_URI , values);
     }

@@ -1,10 +1,8 @@
 package com.example.anvanthinh.lovediary;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -20,8 +18,6 @@ import com.example.anvanthinh.lovediary.controller.ActivityController;
 import com.example.anvanthinh.lovediary.controller.OnePaneController;
 import com.example.anvanthinh.lovediary.controller.TwoPaneController;
 import com.example.anvanthinh.lovediary.database.Story;
-import com.example.anvanthinh.lovediary.database.StoryHelper;
-import com.example.anvanthinh.lovediary.database.StoryModel;
 import com.example.anvanthinh.lovediary.database.StoryProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -142,14 +138,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 intent1.setAction(SyncService.UPLOAD);
                 intent1.putExtra(SyncService.NAME_ACCOUNT, mNameAccount);
                 startService(intent1);
-                //new PushStory().execute();
                 break;
             case R.id.down:
                 Intent intent2 = new Intent(this, SyncService.class);
                 intent2.setAction(SyncService.DOWNLOAD);
                 intent2.putExtra(SyncService.NAME_ACCOUNT, mNameAccount);
                 startService(intent2);
-                //new GetData().execute();
                 break;
             case R.id.set_time_write:
                 new GetKey().execute();
@@ -166,81 +160,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    // lop day du lieu len server
-    private class PushStory extends AsyncTask<Void, Void, Void> {
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            String selection = StoryHelper.COLUMN_SYNC + " like ?";
-            String[] selectionArgs = new String[] {"0"};
-            String[] projection = new String[] {
-                    StoryHelper.COLUMN_ID, StoryHelper.COLUMN_TITTLE, StoryHelper.COLUMN_CONTENT, StoryHelper.COLUMN_DATE,
-                    StoryHelper.COLUMN_LIKE, StoryHelper.COLUMN_PAPER_CLIP, StoryHelper.COLUMN_POSTER, StoryHelper.COLUMN_SYNC
-            };
-            Cursor c = getContentResolver().query(StoryProvider.STORY_URI, projection, null, null, null);
-
-            mReference = FirebaseDatabase.getInstance().getReference();
-            for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()){
-                Log.d("thinhavb", "sync = " + c.getInt(c.getColumnIndex(StoryHelper.COLUMN_SYNC)));
-                if(c.getInt(c.getColumnIndex(StoryHelper.COLUMN_SYNC)) == 0){
-                    Story s = new Story();
-                    s.setId(c.getString(c.getColumnIndex(StoryHelper.COLUMN_ID)));
-                    s.setTitle(c.getString(c.getColumnIndex(StoryHelper.COLUMN_TITTLE)));
-                    s.setContent(c.getString(c.getColumnIndex(StoryHelper.COLUMN_CONTENT)));
-                    s.setDate(c.getLong(c.getColumnIndex(StoryHelper.COLUMN_DATE)));
-                    s.setAttach(c.getInt(c.getColumnIndex(StoryHelper.COLUMN_PAPER_CLIP)));
-                    s.setPoster(c.getInt(c.getColumnIndex(StoryHelper.COLUMN_POSTER)));
-                    Log.d("thinhavb", s.getId());
-                    mReference.child(STORY).child(mNameAccount).push().setValue(s);
-                    ContentValues valuse = new ContentValues();
-                    valuse.put(StoryHelper.COLUMN_SYNC , 1);
-                    String id = c.getString(c.getColumnIndex(StoryHelper.COLUMN_ID));
-                    getContentResolver().update(StoryProvider.STORY_URI, valuse, StoryHelper.COLUMN_ID  +  " LIKE ? ", new String[] {id});
-                    Log.d("thinhavb", "id : "+ s.getId() + "name : " + c.getInt(c.getColumnIndex(StoryHelper.COLUMN_SYNC)));
-                }
-            }
-            return null;
-        }
-    }
-
-
-    // lop dung de lay du lieu ve
-    private class GetData extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            mReference = FirebaseDatabase.getInstance().getReference();
-            mReference.child(STORY).child(mNameAccount).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    getContentResolver().delete(StoryProvider.STORY_URI,null, null);
-                    for(DataSnapshot data: dataSnapshot.getChildren()){
-                        Story s = data.getValue(Story.class);
-                        Log.d("thinhavb", "id = " + s.getId());
-                        StoryModel model = new StoryModel(MainActivity.this);
-                        model.InsertStorySync(s);
-                        Log.d("thinhavb", "key = " + data.getKey());
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-    }
 
     private class GetKey extends AsyncTask<Void, Void, Void> {
         @Override

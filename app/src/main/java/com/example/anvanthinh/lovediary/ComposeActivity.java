@@ -125,6 +125,7 @@ public class ComposeActivity extends AppCompatActivity implements View.OnClickLi
         int sex = mSharedpreferences.getInt(SignInFragment.SEX, 0);
         Story s = new Story();
         s.setTitle(mTittle.getText()+"");
+        s.setKey("");
         s.setContent(mContent.getText()+"");
         long date = mCalendar.getTimeInMillis();
         s.setDate(date);
@@ -132,10 +133,6 @@ public class ComposeActivity extends AppCompatActivity implements View.OnClickLi
         storyModel.insert_story(s);
         mTittle.setText("");
         mContent.setText("");
-        //thinhav: test
-//        mFirebaseDatabase = FirebaseDatabase.getInstance().getReference();
-//        mFirebaseDatabase.child("user_1").child("ho_ten1").setValue("ten 1");
-//        mFirebaseDatabase.child("user_1").child("ho_ten2").setValue("ten 2");
         super.onBackPressed();
     }
 

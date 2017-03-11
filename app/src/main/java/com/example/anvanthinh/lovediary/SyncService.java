@@ -27,6 +27,7 @@ public class SyncService extends IntentService {
     protected static final String NAME_ACCOUNT = "name_account";
     private DatabaseReference mReference;
     private String mNameAccount;
+    private String[] projection;
 
     public SyncService() {
         super("SyncService");
@@ -35,6 +36,11 @@ public class SyncService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
+        projection = new String[]{
+                StoryHelper.COLUMN_ID, StoryHelper.COLUMN_TITTLE, StoryHelper.COLUMN_CONTENT, StoryHelper.COLUMN_DATE,
+                StoryHelper.COLUMN_LIKE, StoryHelper.COLUMN_PAPER_CLIP, StoryHelper.COLUMN_POSTER, StoryHelper.COLUMN_SYNC,
+                StoryHelper.COLUMN_KEY
+        };
     }
 
     @Override
@@ -52,10 +58,6 @@ public class SyncService extends IntentService {
         mReference = FirebaseDatabase.getInstance().getReference();
         String selection = StoryHelper.COLUMN_SYNC + " like ?";
         String[] selectionArgs = new String[]{"0"};
-        String[] projection = new String[]{
-                StoryHelper.COLUMN_ID, StoryHelper.COLUMN_TITTLE, StoryHelper.COLUMN_CONTENT, StoryHelper.COLUMN_DATE,
-                StoryHelper.COLUMN_LIKE, StoryHelper.COLUMN_PAPER_CLIP, StoryHelper.COLUMN_POSTER, StoryHelper.COLUMN_SYNC
-        };
         Cursor c = getContentResolver().query(StoryProvider.STORY_URI, projection, null, null, null);
 
         mReference = FirebaseDatabase.getInstance().getReference();
@@ -64,35 +66,45 @@ public class SyncService extends IntentService {
             if (c.getInt(c.getColumnIndex(StoryHelper.COLUMN_SYNC)) == 0) {
                 Story s = new Story();
                 s.setId(c.getString(c.getColumnIndex(StoryHelper.COLUMN_ID)));
+                s.setKey(c.getString(c.getColumnIndex(StoryHelper.COLUMN_KEY)));
                 s.setTitle(c.getString(c.getColumnIndex(StoryHelper.COLUMN_TITTLE)));
                 s.setContent(c.getString(c.getColumnIndex(StoryHelper.COLUMN_CONTENT)));
                 s.setDate(c.getLong(c.getColumnIndex(StoryHelper.COLUMN_DATE)));
                 s.setAttach(c.getInt(c.getColumnIndex(StoryHelper.COLUMN_PAPER_CLIP)));
                 s.setPoster(c.getInt(c.getColumnIndex(StoryHelper.COLUMN_POSTER)));
-                Log.d("thinhavb", s.getId());
                 mReference.child(STORY).child(mNameAccount).push().setValue(s);
                 ContentValues valuse = new ContentValues();
                 valuse.put(StoryHelper.COLUMN_SYNC, 1);
                 String id = c.getString(c.getColumnIndex(StoryHelper.COLUMN_ID));
                 getContentResolver().update(StoryProvider.STORY_URI, valuse, StoryHelper.COLUMN_ID + " LIKE ? ", new String[]{id});
-                Log.d("thinhavb", "id : " + s.getId() + "name : " + c.getInt(c.getColumnIndex(StoryHelper.COLUMN_SYNC)));
             }
         }
     }
 
     private void download(String mNameAccount) {
         mReference = FirebaseDatabase.getInstance().getReference();
-        mReference = FirebaseDatabase.getInstance().getReference();
-        mReference.child(STORY).child(mNameAccount).addValueEventListener(new ValueEventListener() {
+        projection = new String[] {StoryHelper.COLUMN_KEY};
+        final Cursor c = getContentResolver().query(StoryProvider.STORY_URI, projection, null, null, null);
+        mReference.child(STORY).child(mNameAccount).orderByKey().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 getContentResolver().delete(StoryProvider.STORY_URI, null, null);
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Story s = data.getValue(Story.class);
-                    Log.d("thinhavb", "id = " + s.getId());
-                    StoryModel model = new StoryModel(getApplication());
-                    model.InsertStorySync(s);
-                    Log.d("thinhavb", "key = " + data.getKey());
+//                    s.setKey(data.getKey());
+//                    boolean isAdd = true;
+//                    for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+//                        Log.d("thinhavb", "key = " + data.getKey());
+//                        Log.d("thinhavb", "key = " + c.getString(c.getColumnIndex(StoryHelper.COLUMN_KEY)));
+//                        if(data.getKey().equals(c.getString(c.getColumnIndex(StoryHelper.COLUMN_KEY)))== true){
+//                            isAdd = false;
+//                        }
+//                    }
+//                    if(isAdd == true){
+                        StoryModel model = new StoryModel(getApplication());
+                        model.InsertStorySync(s);
+   //                 }
+
                 }
             }
 

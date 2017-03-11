@@ -169,7 +169,7 @@ public class StoryProvider extends ContentProvider {
     private void checkColumns(String[] projection) {
         String[] available = { StoryHelper.COLUMN_ID,StoryHelper.COLUMN_TITTLE,StoryHelper.COLUMN_CONTENT,
                 StoryHelper.COLUMN_DATE,StoryHelper.COLUMN_LIKE,StoryHelper.COLUMN_PAPER_CLIP, StoryHelper.COLUMN_POSTER,
-                StoryHelper.COLUMN_SYNC
+                StoryHelper.COLUMN_SYNC, StoryHelper.COLUMN_KEY
         };
         if (projection != null) {
             HashSet<String> requestedColumns = new HashSet<String>(

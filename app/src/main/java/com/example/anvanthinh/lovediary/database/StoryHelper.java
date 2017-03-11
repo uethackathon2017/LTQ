@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class StoryHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "love_diary.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     public static final String TABLE_STORY = "story_table";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_TITTLE = "ten";
@@ -18,11 +18,13 @@ public class StoryHelper extends SQLiteOpenHelper {
     public static final String COLUMN_POSTER = "nguoi_dang";// 1= nam , 0 = nu
     public static final String COLUMN_READ = "da_xem";// 1= da_xem
     public static final String COLUMN_SYNC = "sync";// 1= da_up
+    public static final String COLUMN_KEY = "key";
     private static final String initDatabase = "create table "
             + TABLE_STORY
             + "("
             + COLUMN_ID + " integer primary key autoincrement, "
             + COLUMN_TITTLE + " text, "
+            + COLUMN_KEY + " text, "
             + COLUMN_CONTENT + " text, "
             + COLUMN_DATE + " long, "
             + COLUMN_LIKE + " integer, "
