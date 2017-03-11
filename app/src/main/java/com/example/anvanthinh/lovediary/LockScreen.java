@@ -19,7 +19,8 @@ import com.andrognito.pinlockview.PinLockView;
 public class LockScreen extends AppCompatActivity implements View.OnClickListener {
     protected static final String SET_PASSWORD = "set password";
     protected static final String SAVE_PASS = "save_pass";
-    protected static  final String FIRST_IN = "vao _lan_dau" ;
+    protected static final String FIRST_IN = "vao _lan_dau";
+    public static final String PASS_SUCCESS = "pass_success";
     private String mPassword = "";
     private String mTempPassword = "";
     private PinLockView mPinLock;
@@ -33,11 +34,13 @@ public class LockScreen extends AppCompatActivity implements View.OnClickListene
     private SharedPreferences mSharedpreferences; // luu password
     private SharedPreferences.Editor mEditor;
     private boolean isFirst;
+    private int mStatePass;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lock_screen);
+        mStatePass = getIntent().getIntExtra(MainActivity.CONDITION_PASS, 0);
         mSave = (FloatingActionButton) findViewById(R.id.bt_save_pass);
         mSave.setOnClickListener(this);
         mSave.setVisibility(View.INVISIBLE);
@@ -48,16 +51,25 @@ public class LockScreen extends AppCompatActivity implements View.OnClickListene
         mPinLock.attachIndicatorDots(mIndicatorDots);
         mPinLock.setPinLockListener(mPinLockListener);
         mPinLock.setPinLength(4);
-        mSharedpreferences = getSharedPreferences(FIRST_IN, Context.MODE_PRIVATE);
-        isFirst = mSharedpreferences.getBoolean(FIRST_IN, true);
-        Intent i = getIntent();
-        if (SET_PASSWORD.equalsIgnoreCase(i.getStringExtra(SET_PASSWORD)) && isFirst == false) {
-            initView();
-            mText.setText(R.string.enter_old_password);
-        }else if (isFirst == true ){
+////        mSharedpreferences = getSharedPreferences(FIRST_IN, Context.MODE_PRIVATE);
+////        isFirst = mSharedpreferences.getBoolean(FIRST_IN, true);
+//        Intent i = getIntent();
+        if (mStatePass == MainActivity.SET_PASS) { // vao set password lan dau
             initView();
             mText.setText(R.string.enter_new_password);
+        } else if (mStatePass == MainActivity.CHANGE_PASS) { // vao de thay doi  password
+            initView();
+            mText.setText(R.string.enter_old_password);
+        } else { // vao de nhap pass
+
         }
+//        if (SET_PASSWORD.equalsIgnoreCase(i.getStringExtra(SET_PASSWORD)) && isFirst == false) {
+//            initView();
+//            mText.setText(R.string.enter_old_password);
+//        }else if (isFirst == true ){
+//            initView();
+//            mText.setText(R.string.enter_new_password);
+//        }
     }
 
     private void initView() {
@@ -73,14 +85,14 @@ public class LockScreen extends AppCompatActivity implements View.OnClickListene
     private PinLockListener mPinLockListener = new PinLockListener() {
         @Override
         public void onComplete(String pin) {
-            if(isFirst == true){ // vao de dat mat khau lan dau tien
+            if (mStatePass == MainActivity.SET_PASS) { // vao set password lan dau
                 mText.setText(R.string.enter_repeat_pass);
                 mPinLock.resetPinLockView();
-                if(pin.equalsIgnoreCase(mTempPassword) && isRepeatPass == true){
+                if (pin.equalsIgnoreCase(mTempPassword) && isRepeatPass == true) {
                     isRepeatPass = true;
                     isSave = true;
                     mSave.setVisibility(View.VISIBLE);
-                }else if(isRepeatPass == true && pin.equals(mTempPassword) == false){
+                } else if (isRepeatPass == true && pin.equals(mTempPassword) == false) {
                     mSave.setImageResource(R.drawable.reload);
                     mSave.setVisibility(View.VISIBLE);
                     isSave = false;
@@ -88,45 +100,44 @@ public class LockScreen extends AppCompatActivity implements View.OnClickListene
                 }
                 mTempPassword = pin;
                 isRepeatPass = true;
-            }else{
+            } else if (mStatePass == MainActivity.CHANGE_PASS) { // vao de thay doi  password
+                if (mPassword.equalsIgnoreCase(pin) == false && isNewPass == false) { // mk cu nhap sai
+                    mPinLock.resetPinLockView();
+                    Toast.makeText(LockScreen.this, R.string.error_pass, Toast.LENGTH_SHORT).show();
+                } else { // mat khau cu nhap dung
+                    if (isNewPass == false) {
+                        isNewPass = true;
+                        mText.setText(R.string.enter_new_password);
+                        mPinLock.resetPinLockView();
+                    } else if (mTempPassword.equalsIgnoreCase(pin)) {
+                        mSave.setVisibility(View.VISIBLE);
+                        isSave = true;
+                        mSave.setVisibility(View.VISIBLE);
+                    } else if (mTempPassword.equalsIgnoreCase(pin) && isRepeatPass == true) {
+                        isSave = false;
+                        mSave.setImageResource(R.drawable.reload);
+                        mSave.setVisibility(View.VISIBLE);
+                        Toast.makeText(LockScreen.this, R.string.error_pass, Toast.LENGTH_SHORT).show();
+                    } else { // chuyen sang man hinh nhap mk moi
+                        mTempPassword = pin;
+                        isRepeatPass = true;
+                        mText.setText(R.string.enter_repeat_pass);
+                        mPinLock.resetPinLockView();
+                    }
+                }
+            } else { // vao de nhap pass
                 mSharedpreferences = getSharedPreferences(SAVE_PASS, Context.MODE_PRIVATE);
-                String mPassword = mSharedpreferences.getString(SAVE_PASS, "");
-                Log.d("thinhavb", "Pin complete: " + pin);
-                if (isSetPass == false) { // dang nhap vao app
-                    if (pin.equalsIgnoreCase(mPassword)) {
-                        Intent i = new Intent(LockScreen.this, MainActivity.class);
-                        startActivity(i);
-                        finish();
-                    } else {
-                        mPinLock.resetPinLockView();
-                        Toast.makeText(LockScreen.this, R.string.error_pass, Toast.LENGTH_SHORT).show();
-                    }
-                } else { // set lại mật khau
-                    if (mPassword.equalsIgnoreCase(pin) == false && isNewPass == false) { // mk cu nhap sai
-                        mPinLock.resetPinLockView();
-                        Toast.makeText(LockScreen.this, R.string.error_pass, Toast.LENGTH_SHORT).show();
-                    } else { // mat khau cu nhap dung
-                        //isNewPass = true;
-                        if (isNewPass == false) {
-                            isNewPass = true;
-                            mText.setText(R.string.enter_new_password);
-                            mPinLock.resetPinLockView();
-                        }else if(mTempPassword.equalsIgnoreCase(pin)){
-                            mSave.setVisibility(View.VISIBLE);
-                            isSave = true;
-                            mSave.setVisibility(View.VISIBLE);
-                        } else if( mTempPassword.equalsIgnoreCase(pin) && isRepeatPass == true){
-                            isSave = false;
-                            mSave.setImageResource(R.drawable.reload);
-                            mSave.setVisibility(View.VISIBLE);
-                            Toast.makeText(LockScreen.this, R.string.error_pass, Toast.LENGTH_SHORT).show();
-                        }else{ // chuyen sang man hinh nhap mk moi
-                            mTempPassword = pin;
-                            isRepeatPass = true;
-                            mText.setText(R.string.enter_repeat_pass);
-                            mPinLock.resetPinLockView();
-                        }
-                    }
+                String password = mSharedpreferences.getString(SAVE_PASS, "");
+                if(pin.equals(password) == true){ // pass nhap dung
+                    SharedPreferences.Editor editor = getSharedPreferences(PASS_SUCCESS, Context.MODE_PRIVATE).edit();
+                    editor.putBoolean(PASS_SUCCESS, true);
+                    editor.commit();
+                    Intent i = new Intent(LockScreen.this, MainActivity.class);
+                    startActivity(i);
+                    finish();
+                }else{
+                    mPinLock.resetPinLockView();
+                    Toast.makeText(LockScreen.this, R.string.error_pass, Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -154,7 +165,7 @@ public class LockScreen extends AppCompatActivity implements View.OnClickListene
                     mEditor.commit();
                     mPinLock.resetPinLockView();
                     mText.setText(R.string.enter_old_password);
-                    if(isFirst == true){
+                    if (isFirst == true) {
                         mEditor = getSharedPreferences(FIRST_IN, Context.MODE_PRIVATE).edit();
                         mEditor.putBoolean(FIRST_IN, false);
                         mEditor.commit();
