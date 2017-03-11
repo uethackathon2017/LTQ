@@ -12,6 +12,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,7 @@ public class StoryViewControllerFragment extends Fragment implements View.OnClic
         if (isTablet == false) {
             mPosition = getArguments().getInt(StoryAdapter.ID_STORY);
             mViewPager.setCurrentItem(mPosition);
-        } else {
+        } else if(isTablet == true) {
             IntentFilter mIntentFilter = new IntentFilter(StoryAdapter.DOC_NOI_DUNG);
             mReceiver = new BroadcastReceiver() {
                 @Override
@@ -84,6 +85,7 @@ public class StoryViewControllerFragment extends Fragment implements View.OnClic
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        Log.d("thinhav" , "on finish view controller");
         StoryPagerAdapter mAdapter = new StoryPagerAdapter(getActivity().getSupportFragmentManager(), getActivity(), cursor);
         mViewPager.setAdapter(mAdapter);
     }

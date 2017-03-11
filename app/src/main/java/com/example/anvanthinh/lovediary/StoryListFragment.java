@@ -24,6 +24,7 @@ import com.example.anvanthinh.lovediary.database.StoryProvider;
 
 public class StoryListFragment extends Fragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
     protected static final int STORY_LOADER = 0;
+    protected static final int STORY_LOADERR = 1;
     private FloatingActionButton mButtonCompose;
     private RecyclerView mListStories ;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -45,7 +46,7 @@ public class StoryListFragment extends Fragment implements View.OnClickListener,
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mButtonCompose.setOnClickListener(this);
-        getActivity().getSupportLoaderManager().initLoader(STORY_LOADER, null, this);
+        getActivity().getSupportLoaderManager().initLoader(STORY_LOADERR, null, this);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class StoryListFragment extends Fragment implements View.OnClickListener,
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String sortOder = StoryHelper.COLUMN_DATE + " DESC";
-        if (id == STORY_LOADER){
+        if (id == STORY_LOADERR){
             CursorLoader cursor = new CursorLoader( getActivity(), StoryProvider.STORY_URI, null, null, null, sortOder );
             return  cursor;
         }else {

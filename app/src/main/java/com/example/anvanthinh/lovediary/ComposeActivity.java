@@ -3,6 +3,7 @@ package com.example.anvanthinh.lovediary;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +23,7 @@ import java.util.TimeZone;
  * class dung de tao moi 1 story
  */
 
-public class ComposeActivity extends BaseActivity implements View.OnClickListener {
+public class ComposeActivity extends AppCompatActivity implements View.OnClickListener {
     private static  final  String TITLE = "title";
     private static  final  String CONTENT = "title";
     private static  final  String SAVE_DATA = "save data";

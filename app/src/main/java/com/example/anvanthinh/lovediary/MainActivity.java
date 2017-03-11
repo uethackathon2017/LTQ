@@ -11,6 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -24,7 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     protected static final int STORY_LOADER = 0;
     protected static  final String LOCKSCREEN = "lock_screen" ;
     protected static  final int SET_PASS = 0 ;
@@ -47,12 +48,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mSharedpreferences = getSharedPreferences(SignInFragment.ACCOUNT, Context.MODE_PRIVATE);
-        mNameAccount = mSharedpreferences.getString(SignInFragment.ACCOUNT_NAME, "");
-        if( "".equals(mNameAccount) == true){
-            Intent i = new Intent(MainActivity.this, InitActivity.class);
-            startActivity(i);
-        }
         isTablet = getResources().getBoolean(R.bool.isTablet);
         if (isTablet == false) {
             mController = new OnePaneController(this);
@@ -61,7 +56,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
         mController.onCreate(savedInstanceState);
 
-
+        mSharedpreferences = getSharedPreferences(SignInFragment.ACCOUNT, Context.MODE_PRIVATE);
+        mNameAccount = mSharedpreferences.getString(SignInFragment.ACCOUNT_NAME, "");
+        if( "".equals(mNameAccount) == true){
+            Intent i = new Intent(MainActivity.this, InitActivity.class);
+            startActivity(i);
+        }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -146,7 +146,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     StoryHelper.COLUMN_LIKE, StoryHelper.COLUMN_PAPER_CLIP, StoryHelper.COLUMN_POSTER, StoryHelper.COLUMN_SYNC
             };
             Cursor c = getContentResolver().query(StoryProvider.STORY_URI, projection, null, null, null);
-            int a = c.getCount();
             mReference = FirebaseDatabase.getInstance().getReference();
             for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()){
                 if(c.getInt(c.getColumnIndex(StoryHelper.COLUMN_SYNC)) == 0){

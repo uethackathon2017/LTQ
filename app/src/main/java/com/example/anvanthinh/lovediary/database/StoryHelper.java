@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class StoryHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "love_diary.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
     public static final String TABLE_STORY = "story_table";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_TITTLE = "ten";

@@ -23,8 +23,6 @@ public class StoryProvider extends ContentProvider {
     private static final String BASE_PATH = "story";
     public static final Uri STORY_URI = Uri.parse("content://" + AUTHORITY
             + "/" + BASE_PATH);
-    public static final Uri STORY_COUNT_URI = Uri.parse("content://" + AUTHORITY
-            + "/" + BASE_PATH);
 
     public static final String STORY_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
             + "/stories";
@@ -170,8 +168,8 @@ public class StoryProvider extends ContentProvider {
     // kiem tra cac cot truy van xem co trong bang khong
     private void checkColumns(String[] projection) {
         String[] available = { StoryHelper.COLUMN_ID,StoryHelper.COLUMN_TITTLE,StoryHelper.COLUMN_CONTENT,
-                StoryHelper.COLUMN_DATE,StoryHelper.COLUMN_LIKE,StoryHelper.COLUMN_PAPER_CLIP, StoryHelper.COLUMN_POSTER
-                , StoryHelper.COLUMN_SYNC
+                StoryHelper.COLUMN_DATE,StoryHelper.COLUMN_LIKE,StoryHelper.COLUMN_PAPER_CLIP, StoryHelper.COLUMN_POSTER,
+                StoryHelper.COLUMN_SYNC
         };
         if (projection != null) {
             HashSet<String> requestedColumns = new HashSet<String>(
