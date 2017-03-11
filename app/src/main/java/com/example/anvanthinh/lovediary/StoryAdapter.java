@@ -1,10 +1,13 @@
 package com.example.anvanthinh.lovediary;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.CursorAdapter;
@@ -39,6 +42,8 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
     private boolean isTablet;
     private Cursor cursor;
     private IItemActionbar mInterface;
+    final static int FLIP_VERTICAL = 1;
+    final static int FLIP_HORIZONTAL = 2;
 
     public StoryAdapter(Activity c, Cursor cursor) {
         this.mContext = c;
@@ -162,7 +167,8 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
                     if (isRead == 0) {
                         mTitle.setTextColor(R.color.gray_dark);
                         valuse.put(StoryHelper.COLUMN_READ, 1);
-                        mContext.getContentResolver().update(StoryProvider.STORY_URI, valuse, StoryHelper.COLUMN_ID + " = ?", new String[]{id});
+                        mContext.getContentResolver().update(StoryProvider.STORY_URI, valuse, StoryHelper.COLUMN_ID + " LIKE ?", new String[]{id});
+
                     }
                     if (isTablet == false) {
                         StoryViewControllerFragment fragment = new StoryViewControllerFragment();
@@ -179,12 +185,23 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
                     break;
                 case R.id.contact_image:
                     if (isCheckAvatar == false) {
-                        mAvatar.setImageResource(R.drawable.ic_checked);
+                        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_checked);
+                        ObjectAnimator flip = ObjectAnimator.ofFloat(mAvatar, "rotationY", 90f, 0f);
+                        flip.setDuration(500);
+                        flip.start();
+                        mAvatar.setImageBitmap(bitmap);
                         isCheckAvatar = true;
                     } else {
+                        sex = cursor.getInt(cursor.getColumnIndex(StoryHelper.COLUMN_POSTER));
                         if (sex == 1) {
+                            ObjectAnimator flip = ObjectAnimator.ofFloat(mAvatar, "rotationY", 0f, 90f);
+                            flip.setDuration(500);
+                            flip.start();
                             mAvatar.setImageResource(R.drawable.man_avatar);
                         } else {
+                            ObjectAnimator flip = ObjectAnimator.ofFloat(mAvatar, "rotationY", 0f, 90f);
+                            flip.setDuration(500);
+                            flip.start();
                             mAvatar.setImageResource(R.drawable.woman_avatar);
                         }
                         isCheckAvatar = false;

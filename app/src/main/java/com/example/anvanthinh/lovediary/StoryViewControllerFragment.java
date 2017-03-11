@@ -99,6 +99,7 @@ public class StoryViewControllerFragment extends Fragment implements View.OnClic
         if (cursor != null){
             StoryPagerAdapter mAdapter = new StoryPagerAdapter(getActivity().getSupportFragmentManager(), getActivity(), cursor);
             mViewPager.setAdapter(mAdapter);
+            mViewPager.setCurrentItem(mPosition);
         }
 
     }

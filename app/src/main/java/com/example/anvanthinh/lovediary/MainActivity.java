@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if( "".equals(mNameAccount) == true){
             Intent i = new Intent(MainActivity.this, InitActivity.class);
             startActivity(i);
+        }else{
+            new GetData().execute();
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -138,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new GetData().execute();
                 break;
             case R.id.set_time_write:
-                testGetID();
                 break;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -226,27 +227,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
         }
-    }
-
-    //thinhav
-
-    private void testGetID() {
-        Account acc = new Account("name", "pass", "phone");
-        mReference = FirebaseDatabase.getInstance().getReference();
-        mReference.child("lovediary-ab1c0").limitToLast(2).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot data: dataSnapshot.getChildren()){
-                    Log.d("thinhav", "key: " + data.getKey());
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
 
