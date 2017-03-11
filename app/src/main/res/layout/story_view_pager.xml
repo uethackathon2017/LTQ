@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="10dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -13,30 +15,40 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/conv_list_padding"
+            android:layout_gravity="center_vertical"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="@dimen/conv_list_padding"
+            android:layout_marginTop="10dp"
+            android:paddingTop="10dp"
             android:layout_weight="0.92"
-            android:text="Tieu de 1"
-            android:textSize="24sp" />
+            android:textStyle="bold"
+            android:lines="2"
+            android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/star"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_marginRight="16dp"
+            android:padding="10dp"
+            android:layout_marginLeft="10dp"
             android:src="@drawable/ic_btn_star_off" />
+
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginTop="9dp"
+        android:layout_height="2dp"
+        android:background="@drawable/border_textiew" />
 
     <ScrollView
+        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <TextView
             android:id="@+id/story_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="noi dung doan nhat ky 1"
             android:textSize="14sp"></TextView>
     </ScrollView>
 

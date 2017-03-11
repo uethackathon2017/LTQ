@@ -64,30 +64,36 @@ public class SignInFragment extends Fragment implements View.OnClickListener, IC
                     Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.name_empty), Toast.LENGTH_SHORT).show();
                     mName.requestFocus();
                     return;
-                } else if ("".equals(mPass.getText() + "") == true) {
+                }
+                if ("".equals(mPass.getText() + "") == true) {
                     Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.pass_empty), Toast.LENGTH_SHORT).show();
                     mPass.requestFocus();
                     return;
                 } else {
+                    boolean isAccount = false;
+                    boolean isPass = false;
                     for (int i = 0; i < mAccounts.size(); i++) {
                         if (mNameAccount.equals(mAccounts.get(i).getName()) == true) {
                             if ((mPass.getText() + "").equals(mAccounts.get(i).getPass()) == true) {
-                                //showSexDialog();
+                                isAccount = true;
+                                isPass = true;
                                 SexDialog dialog = new SexDialog(getActivity());
                                 dialog.setName(mNameAccount);
                                 dialog.setPass(mPass.getText() + "");
                                 dialog.show();
                                 return;
-                            } else {
-                                mPass.requestFocus();
-                                Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.error_pass), Toast.LENGTH_SHORT).show();
-                                return;
                             }
-                        } else {
-                            mName.requestFocus();
-                            Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.no_account), Toast.LENGTH_SHORT).show();
-                            return;
                         }
+                    }
+                    if (isPass == false){
+                        mPass.requestFocus();
+                        Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.error_pass), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if(isAccount == false){
+                        mName.requestFocus();
+                        Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.no_account), Toast.LENGTH_SHORT).show();
+                        return;
                     }
                 }
                 break;

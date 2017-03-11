@@ -41,7 +41,6 @@
                     android:layout_marginTop="5dp"
                     android:textSize="20sp"
                     android:lines="1"
-                    android:text="title_story"
                     android:includeFontPadding="false"
                     android:typeface="sans" />
 
@@ -63,9 +62,9 @@
 
                 <ImageView
                     android:id="@+id/star"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="3dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:padding="5dp"
                     android:layout_alignParentRight="true"
                     android:src="@drawable/ic_btn_star_off" />
 
@@ -77,7 +76,6 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="3dp"
                     android:includeFontPadding="false"
-                    android:text="day la noi dung"
                     android:lines="2"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"
@@ -90,7 +88,6 @@
                     android:textSize="12sp"
                     android:lines="1"
                     android:layout_below="@+id/snippet"
-                    android:text="02/11/2995"
                     android:textColor="@color/blue"
                     android:includeFontPadding="false"
                     android:layout_alignParentRight="true" />
