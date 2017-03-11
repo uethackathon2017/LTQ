@@ -12,7 +12,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +84,6 @@ public class StoryViewControllerFragment extends Fragment implements View.OnClic
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        Log.d("thinhav" , "on finish view controller");
         StoryPagerAdapter mAdapter = new StoryPagerAdapter(getActivity().getSupportFragmentManager(), getActivity(), cursor);
         mViewPager.setAdapter(mAdapter);
         mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());

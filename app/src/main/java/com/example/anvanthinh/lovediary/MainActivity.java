@@ -241,9 +241,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
-//        mReference.child(ACCOUNT).push().setValue(acc);
-//        String key = mReference.getKey();
-//        Log.d("thinhav", "key: " + key);
     }
 
 
