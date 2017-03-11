@@ -21,6 +21,7 @@ import com.example.anvanthinh.lovediary.database.StoryHelper;
 import com.example.anvanthinh.lovediary.database.StoryProvider;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -37,8 +38,11 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
     private Activity mContext;
     private boolean isTablet;
     private Cursor cursor;
+    private IItemActionbar mInterface;
+
     public StoryAdapter(Activity c, Cursor cursor) {
         this.mContext = c;
+        mInterface = (IItemActionbar) c;
         mCursorAdapter = new CursorAdapter(c, cursor, 0) {
             @Override
             public View newView(Context context, Cursor cursor, ViewGroup parent) {
@@ -86,16 +90,15 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
         SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
         holder.mDate.setText(df2.format(date));
         isRead = cursor.getInt(cursor.getColumnIndex(StoryHelper.COLUMN_READ));
-        if(isRead == 1){
-            holder.mTitle.setTextColor(android.R.color.darker_gray);
-            holder.mContent.setTextColor(android.R.color.darker_gray);
-        }else{
+        if (isRead == 1) {
+            holder.mTitle.setTextColor(R.color.gray_dark);
+        } else {
             holder.mTitle.setTextColor(mContext.getResources().getColor(R.color.red));
         }
         sex = cursor.getInt(cursor.getColumnIndex(StoryHelper.COLUMN_POSTER));
-        if(sex == 1){
+        if (sex == 1) {
             holder.mAvatar.setImageResource(R.drawable.man_avatar);
-        }else{
+        } else {
             holder.mAvatar.setImageResource(R.drawable.woman_avatar);
         }
     }
@@ -126,6 +129,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
         private ImageView mStar;
         private ImageView mPaperClip;
         private LinearLayout mItemView;
+        private boolean isCheckAvatar = false;
 
         public ViewHolder(View v) {
             super(v);
@@ -135,7 +139,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
             mAvatar = (ImageView) v.findViewById(R.id.contact_image);
             mStar = (ImageView) v.findViewById(R.id.star);
             mPaperClip = (ImageView) v.findViewById(R.id.paperclip);
-            mItemView = (LinearLayout)v.findViewById(R.id.itemview);
+            mItemView = (LinearLayout) v.findViewById(R.id.itemview);
 
             mContent.setOnClickListener(this);
             mTitle.setOnClickListener(this);
@@ -147,9 +151,19 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
         public void onClick(View v) {
             isTablet = mContext.getResources().getBoolean(R.bool.isTablet);
             mPostion = this.getAdapterPosition();
+            mCursorAdapter.getCursor().moveToPosition(mPostion);
+            Cursor cursor = mCursorAdapter.getCursor();
+            String id = cursor.getString(cursor.getColumnIndex(StoryHelper.COLUMN_ID));
+            ContentValues valuse = new ContentValues();
             switch (v.getId()) {
                 case R.id.title_story:
                 case R.id.snippet:
+                    isRead = cursor.getInt(cursor.getColumnIndex(StoryHelper.COLUMN_READ));
+                    if (isRead == 0) {
+                        mTitle.setTextColor(R.color.gray_dark);
+                        valuse.put(StoryHelper.COLUMN_READ, 1);
+                        mContext.getContentResolver().update(StoryProvider.STORY_URI, valuse, StoryHelper.COLUMN_ID + " = ?", new String[]{id});
+                    }
                     if (isTablet == false) {
                         StoryViewControllerFragment fragment = new StoryViewControllerFragment();
                         Bundle args = new Bundle();
@@ -164,28 +178,41 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
                     }
                     break;
                 case R.id.contact_image:
+                    if (isCheckAvatar == false) {
+                        mAvatar.setImageResource(R.drawable.ic_checked);
+                        isCheckAvatar = true;
+                    } else {
+                        if (sex == 1) {
+                            mAvatar.setImageResource(R.drawable.man_avatar);
+                        } else {
+                            mAvatar.setImageResource(R.drawable.woman_avatar);
+                        }
+                        isCheckAvatar = false;
+                    }
                     break;
                 case R.id.star:
                 case R.id.date:
                 case R.id.paperclip:
-                    mCursorAdapter.getCursor().moveToPosition(mPostion);
-                    Cursor cursor = mCursorAdapter.getCursor();
-                    String id = cursor.getString(cursor.getColumnIndex(StoryHelper.COLUMN_ID));
-                    ContentValues valuse = new ContentValues();
                     like = cursor.getInt(cursor.getColumnIndex(StoryHelper.COLUMN_LIKE));
                     if (like == 0) {
                         mStar.setImageResource(R.drawable.ic_btn_star_on);
-                        valuse.put(StoryHelper.COLUMN_LIKE , 1);
-                        mContext.getContentResolver().update(StoryProvider.STORY_URI, valuse, StoryHelper.COLUMN_ID  +  " LIKE ?", new String[] {id});
+                        valuse.put(StoryHelper.COLUMN_LIKE, 1);
+                        mContext.getContentResolver().update(StoryProvider.STORY_URI, valuse, StoryHelper.COLUMN_ID + " LIKE ?", new String[]{id});
                     } else {
-                        valuse.put(StoryHelper.COLUMN_LIKE , 0);
-                        mContext.getContentResolver().update(StoryProvider.STORY_URI, valuse, StoryHelper.COLUMN_ID  +  " LIKE ?", new String[] {id});
+                        valuse.put(StoryHelper.COLUMN_LIKE, 0);
+                        mContext.getContentResolver().update(StoryProvider.STORY_URI, valuse, StoryHelper.COLUMN_ID + " LIKE ?", new String[]{id});
                         mStar.setImageResource(R.drawable.ic_btn_star_off);
                     }
                     break;
             }
         }
     }
+
+    public interface IItemActionbar {
+        void removeItem(ArrayList<Story> arr);
+    }
+
+
 }
 
 

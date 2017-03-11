@@ -1,5 +1,6 @@
 package com.example.anvanthinh.lovediary;
 
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.anvanthinh.lovediary.database.Story;
+import com.example.anvanthinh.lovediary.database.StoryHelper;
+import com.example.anvanthinh.lovediary.database.StoryProvider;
 
 import java.util.ArrayList;
 
@@ -17,14 +20,14 @@ import java.util.ArrayList;
  * class dung de hien thi noi dung chi tiet 1 story
  */
 
-public class StoryViewFragment extends Fragment implements  View.OnClickListener{
+public class StoryViewFragment extends Fragment implements View.OnClickListener {
     private ArrayList<Story> mArr = new ArrayList<Story>();
     // private BroadcastReceiver mReceiver = null;
     private int mPosition;
     private TextView mSnippet;
     private TextView mTitle;
-    private boolean isTablet = false;
     private ImageView mStar;
+    private Story mStory;
 
     @Nullable
     @Override
@@ -32,12 +35,15 @@ public class StoryViewFragment extends Fragment implements  View.OnClickListener
         View v = inflater.inflate(R.layout.story_view_pager, container, false);
         mSnippet = (TextView) v.findViewById(R.id.story_content);
         mTitle = (TextView) v.findViewById(R.id.title);
-        isTablet = getResources().getBoolean(R.bool.isTablet);
-        mStar = (ImageView)v.findViewById(R.id.star);
+        mStar = (ImageView) v.findViewById(R.id.star);
         mStar.setOnClickListener(this);
-        Story s = (Story) getArguments().getSerializable(StoryAdapter.ID_STORY);
-        mSnippet.setText(s.getContent());
-        mTitle.setText(s.getTitle());
+        mStory = (Story) getArguments().getSerializable(StoryAdapter.ID_STORY);
+        if (mStory.getLike() == 1) {
+            mStar.setImageResource(R.drawable.ic_btn_star_on);
+        }
+        mSnippet.setText(mStory.getContent());
+        mTitle.setText(mStory.getTitle());
+        mTitle.setTextColor(android.R.color.black);
         return v;
     }
 
@@ -61,9 +67,18 @@ public class StoryViewFragment extends Fragment implements  View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.star:
-
+                ContentValues values = new ContentValues();
+                String id = mStory.getId();
+                if (mStory.getLike() == 1) {
+                    mStar.setImageResource(R.drawable.ic_btn_star_off);
+                    values.put(StoryHelper.COLUMN_LIKE, 0);
+                } else {
+                    values.put(StoryHelper.COLUMN_LIKE, 1);
+                    mStar.setImageResource(R.drawable.ic_btn_star_on);
+                }
+                getActivity().getContentResolver().update(StoryProvider.STORY_URI, values, StoryHelper.COLUMN_ID + " LIKE ?", new String[]{id});
                 break;
         }
     }

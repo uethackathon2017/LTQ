@@ -5,8 +5,11 @@
         android:id="@+id/change_pass"
         android:title="@string/change_password" />
     <item
-        android:id="@+id/sync"
-        android:title="@string/sync" />
+        android:id="@+id/up"
+        android:title="@string/up_data" />
+    <item
+        android:id="@+id/down"
+        android:title="@string/down_data" />
     <item
         android:id="@+id/set_time_write"
         android:title="@string/set_time_write" />

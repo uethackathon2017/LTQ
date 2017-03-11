@@ -39,4 +39,6 @@
     <string name="man">Nam</string>
     <string name="woman">Nữ</string>
     <string name="phone_duplicate">Đã có người đăng kí số điện thoại này</string>
+    <string name="up_data">Tải dữ liệu lên</string>
+    <string name="down_data">Lấy dữ liệu về máy</string>
 </resources>

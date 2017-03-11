@@ -88,6 +88,8 @@ public class StoryViewControllerFragment extends Fragment implements View.OnClic
         Log.d("thinhav" , "on finish view controller");
         StoryPagerAdapter mAdapter = new StoryPagerAdapter(getActivity().getSupportFragmentManager(), getActivity(), cursor);
         mViewPager.setAdapter(mAdapter);
+        mViewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+
     }
 
     @Override

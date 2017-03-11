@@ -6,6 +6,7 @@
     <color name="blue">#304ffe</color>
     <color name="blue_light">#64b5f6</color>
     <color name="gray_light">#FAFAFA</color>
+    <color name="gray_dark">#888787</color>
     <color name="red">#f22613</color>
     <color name="red_dark">#d50000</color>
     <color name="orange">#ff9800</color>

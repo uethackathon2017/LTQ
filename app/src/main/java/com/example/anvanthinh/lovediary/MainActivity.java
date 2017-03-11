@@ -20,12 +20,18 @@ import com.example.anvanthinh.lovediary.controller.OnePaneController;
 import com.example.anvanthinh.lovediary.controller.TwoPaneController;
 import com.example.anvanthinh.lovediary.database.Story;
 import com.example.anvanthinh.lovediary.database.StoryHelper;
+import com.example.anvanthinh.lovediary.database.StoryModel;
 import com.example.anvanthinh.lovediary.database.StoryProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, StoryAdapter.IItemActionbar {
     protected static final int STORY_LOADER = 0;
     protected static  final String LOCKSCREEN = "lock_screen" ;
     protected static  final int SET_PASS = 0 ;
@@ -124,8 +130,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 i.putExtra(CONDITION_PASS, CHANGE_PASS);
                 startActivity(i);
                 break;
-            case R.id.sync:
+            case R.id.up:
                 new PushStory().execute();
+                break;
+            case R.id.down:
+                new GetData().execute();
                 break;
             case R.id.set_time_write:
                 break;
@@ -135,6 +144,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    @Override
+    public void removeItem(ArrayList<Story> arr) {
+
+    }
+
+    // lop day du lieu len server
     private class PushStory extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -165,6 +180,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
             return null;
+        }
+    }
+
+
+    // lop dung de lay du lieu ve
+    private class GetData extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            mReference = FirebaseDatabase.getInstance().getReference();
+            mReference.child(STORY).child(mNameAccount).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot data: dataSnapshot.getChildren()){
+                        Story s = data.getValue(Story.class);
+                        StoryModel model = new StoryModel(MainActivity.this);
+                        model.insert_story(s);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
         }
     }
 
