@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.anvanthinh.lovediary.controller.ActivityController;
@@ -137,12 +138,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new GetData().execute();
                 break;
             case R.id.set_time_write:
+                testGetID();
                 break;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
     @Override
     public void removeItem(ArrayList<Story> arr) {
@@ -154,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         protected Void doInBackground(Void... params) {
-            String selection = StoryHelper.COLUMN_SYNC + " =?";
+            String selection = StoryHelper.COLUMN_SYNC + " like ?";
             String[] selectionArgs = new String[] {"0"};
             String[] projection = new String[] {
                     StoryHelper.COLUMN_ID, StoryHelper.COLUMN_TITTLE, StoryHelper.COLUMN_CONTENT, StoryHelper.COLUMN_DATE,
@@ -175,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     ContentValues valuse = new ContentValues();
                     valuse.put(StoryHelper.COLUMN_SYNC , 1);
                     String id = c.getString(c.getColumnIndex(StoryHelper.COLUMN_ID));
-                    getContentResolver().update(StoryProvider.STORY_URI, valuse, StoryHelper.COLUMN_ID  +  " =? ", new String[] {id});
+                    getContentResolver().update(StoryProvider.STORY_URI, valuse, StoryHelper.COLUMN_ID  +  " LIKE ? ", new String[] {id});
                 }
 
             }
@@ -217,6 +220,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
         }
+    }
+
+    //thinhav
+
+    private void testGetID() {
+        Account acc = new Account("name", "pass", "phone");
+        mReference = FirebaseDatabase.getInstance().getReference();
+        mReference.child("lovediary-ab1c0").limitToLast(2).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot data: dataSnapshot.getChildren()){
+                    Log.d("thinhav", "key: " + data.getKey());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+//        mReference.child(ACCOUNT).push().setValue(acc);
+//        String key = mReference.getKey();
+//        Log.d("thinhav", "key: " + key);
     }
 
 

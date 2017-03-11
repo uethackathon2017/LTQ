@@ -212,7 +212,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
         void removeItem(ArrayList<Story> arr);
     }
 
-
 }
 
 

@@ -43,7 +43,7 @@ public class StoryViewFragment extends Fragment implements View.OnClickListener 
         }
         mSnippet.setText(mStory.getContent());
         mTitle.setText(mStory.getTitle());
-        mTitle.setTextColor(android.R.color.black);
+        mTitle.setTextColor(R.color.black);
         return v;
     }
 

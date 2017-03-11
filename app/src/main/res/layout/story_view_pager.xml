@@ -23,6 +23,7 @@
             android:layout_weight="0.92"
             android:textStyle="bold"
             android:lines="2"
+            android:typeface="sans"
             android:textSize="20sp" />
 
         <ImageView
