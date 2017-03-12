@@ -1,4 +1,6 @@
 # LTQ
+library app use:
+
    'com.android.support:appcompat-v7:24.2.1'
      'com.android.support:support-v4:24.2.1'
      'com.andrognito.pinlockview:pinlockview:1.0.1'
