@@ -14,7 +14,9 @@ import com.example.anvanthinh.lovediary.database.Story;
 import com.example.anvanthinh.lovediary.database.StoryHelper;
 import com.example.anvanthinh.lovediary.database.StoryProvider;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * class dung de hien thi noi dung chi tiet 1 story
@@ -26,6 +28,9 @@ public class StoryViewFragment extends Fragment implements View.OnClickListener 
     private int mPosition;
     private TextView mSnippet;
     private TextView mTitle;
+    private TextView mDate;
+    private ImageView mAvatar;
+    private ImageView mPaperClip;
     private ImageView mStar;
     private Story mStory;
 
@@ -34,16 +39,28 @@ public class StoryViewFragment extends Fragment implements View.OnClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.story_view_pager, container, false);
         mSnippet = (TextView) v.findViewById(R.id.story_content);
-        mTitle = (TextView) v.findViewById(R.id.title);
+        mTitle = (TextView) v.findViewById(R.id.title_story);
         mStar = (ImageView) v.findViewById(R.id.star);
+        mDate = (TextView) v.findViewById(R.id.date);
+        mAvatar = (ImageView) v.findViewById(R.id.contact_image);
+        mPaperClip = (ImageView) v.findViewById(R.id.paperclip);
         mStar.setOnClickListener(this);
         mStory = (Story) getArguments().getSerializable(StoryAdapter.ID_STORY);
         if (mStory.getLike() == 1) {
             mStar.setImageResource(R.drawable.ic_btn_star_on);
         }
+        Date date = new Date(mStory.getDate());
+        SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
+        mDate.setText(df2.format(date));
         mSnippet.setText(mStory.getContent());
         mTitle.setText(mStory.getTitle());
         mTitle.setTextColor(R.color.black);
+        int poster = mStory.getPoster();
+        if (poster == 1) {
+            mAvatar.setImageResource(R.drawable.man_avatar);
+        } else if (poster == 0) {
+            mAvatar.setImageResource(R.drawable.woman_avatar);
+        }
         return v;
     }
 

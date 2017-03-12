@@ -5,7 +5,7 @@
     <string name="password_incorrect">Password incorrect</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="change_password">Set Password</string>
+    <string name="change_password">Đổi mật khẩu</string>
     <string name="compose_title">Compose</string>
     <string name="enter_new_password">Nhập mật khẩu mới</string>
     <string name="enter_old_password">Nhập mật khẩu cũ</string>

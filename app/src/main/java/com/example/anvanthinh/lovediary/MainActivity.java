@@ -3,7 +3,6 @@ package com.example.anvanthinh.lovediary;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,19 +10,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.anvanthinh.lovediary.controller.ActivityController;
 import com.example.anvanthinh.lovediary.controller.OnePaneController;
 import com.example.anvanthinh.lovediary.controller.TwoPaneController;
 import com.example.anvanthinh.lovediary.database.Story;
-import com.example.anvanthinh.lovediary.database.StoryProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -69,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             intent2.setAction(SyncService.DOWNLOAD);
             intent2.putExtra(SyncService.NAME_ACCOUNT, mNameAccount);
             startService(intent2);
-            //new GetData().execute();
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -146,7 +138,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startService(intent2);
                 break;
             case R.id.set_time_write:
-                new GetKey().execute();
                 break;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -160,40 +151,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-
-
-    private class GetKey extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            mReference = FirebaseDatabase.getInstance().getReference();
-            mReference.child(STORY).child("aaaq").orderByKey().startAt("KeyzOqPzt2YL-LX29Aa").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    getContentResolver().delete(StoryProvider.STORY_URI,null, null);
-                    for(DataSnapshot data: dataSnapshot.getChildren()){
-                        Log.d("thinhavb", "Debug tim key = " + data.getKey());
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-    }
 
 
 }
