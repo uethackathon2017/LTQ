@@ -91,20 +91,8 @@ public class SyncService extends IntentService {
                 getContentResolver().delete(StoryProvider.STORY_URI, null, null);
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Story s = data.getValue(Story.class);
-//                    s.setKey(data.getKey());
-//                    boolean isAdd = true;
-//                    for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-//                        Log.d("thinhavb", "key = " + data.getKey());
-//                        Log.d("thinhavb", "key = " + c.getString(c.getColumnIndex(StoryHelper.COLUMN_KEY)));
-//                        if(data.getKey().equals(c.getString(c.getColumnIndex(StoryHelper.COLUMN_KEY)))== true){
-//                            isAdd = false;
-//                        }
-//                    }
-//                    if(isAdd == true){
                         StoryModel model = new StoryModel(getApplication());
                         model.InsertStorySync(s);
-   //                 }
-
                 }
             }
 

@@ -3,8 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:background="@drawable/empty"
+        android:layout_gravity="center"
+        android:layout_width="200dp"
+        android:layout_height="200dp" />
+
     <LinearLayout
         android:orientation="vertical"
+        android:id="@+id/list"
+        android:background="@drawable/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -14,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical" >
-        </android.support.v7.widget.RecyclerView>
+    </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
 

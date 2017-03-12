@@ -1,6 +1,7 @@
 package com.example.anvanthinh.lovediary;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -110,14 +111,14 @@ public class ComposeActivity extends AppCompatActivity implements View.OnClickLi
     // ham luu file vao csdl
     private void SaveFile() {
         StoryModel storyModel = new StoryModel(this);
-        if("".equals(mTittle.getText()) == true){
+        if("".equals(mTittle.getText()+"") == true){
             Toast.makeText(this, R.string.empty_title, Toast.LENGTH_SHORT).show();
             mTittle.requestFocus();
             return;
         }
-        if("".equals(mContent.getText()) == true){
+        if("".equals(mContent.getText()+"") == true){
             Toast.makeText(this, R.string.empty_content, Toast.LENGTH_SHORT).show();
-            mTittle.requestFocus();
+            mContent.requestFocus();
             return;
         }
         mSharedpreferences = getSharedPreferences(SignInFragment.ACCOUNT, Context.MODE_PRIVATE);
@@ -133,6 +134,12 @@ public class ComposeActivity extends AppCompatActivity implements View.OnClickLi
         storyModel.insert_story(s);
         mTittle.setText("");
         mContent.setText("");
+        mSharedpreferences = getSharedPreferences(SignInFragment.ACCOUNT, Context.MODE_PRIVATE);
+        String mNameAccount = mSharedpreferences.getString(SignInFragment.ACCOUNT_NAME, "");
+        Intent intent1 = new Intent(this, SyncService.class);
+        intent1.setAction(SyncService.UPLOAD);
+        intent1.putExtra(SyncService.NAME_ACCOUNT, mNameAccount);
+        startService(intent1);
         super.onBackPressed();
     }
 

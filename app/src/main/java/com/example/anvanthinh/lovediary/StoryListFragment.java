@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.example.anvanthinh.lovediary.database.StoryHelper;
 import com.example.anvanthinh.lovediary.database.StoryProvider;
@@ -28,6 +29,7 @@ public class StoryListFragment extends Fragment implements View.OnClickListener,
     private FloatingActionButton mButtonCompose;
     private RecyclerView mListStories ;
     private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayout mLinearList;
     private StoryAdapter mAdapter;
 
     @Nullable
@@ -36,6 +38,7 @@ public class StoryListFragment extends Fragment implements View.OnClickListener,
         View v = inflater.inflate(R.layout.story_list_fragment, container, false);
         mButtonCompose = (FloatingActionButton)v.findViewById(R.id.bt_compose);
         mListStories = (RecyclerView)v.findViewById(R.id.story_listView);
+        mLinearList = (LinearLayout) v.findViewById(R.id.list);
         mListStories.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mListStories.setLayoutManager(mLayoutManager);
@@ -73,6 +76,11 @@ public class StoryListFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if(cursor.getCount() == 0){
+            mLinearList.setVisibility(View.GONE);
+        }else{
+            mLinearList.setVisibility(View.VISIBLE);
+        }
         mAdapter = new StoryAdapter(getActivity(), cursor);
         mListStories.setAdapter(mAdapter);
     }
