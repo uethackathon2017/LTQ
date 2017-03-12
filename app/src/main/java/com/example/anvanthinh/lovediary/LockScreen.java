@@ -40,7 +40,15 @@ public class LockScreen extends AppCompatActivity implements View.OnClickListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lock_screen);
-        mStatePass = getIntent().getIntExtra(MainActivity.CONDITION_PASS, 0);
+        mSharedpreferences = getSharedPreferences(SAVE_PASS, Context.MODE_PRIVATE);
+        mPassword = mSharedpreferences.getString(SAVE_PASS, "1111");
+        mSharedpreferences = getSharedPreferences(FIRST_IN, Context.MODE_PRIVATE);
+        isFirst = mSharedpreferences.getBoolean(FIRST_IN, true);
+        if(isFirst == true){
+            mStatePass = getIntent().getIntExtra(MainActivity.CONDITION_PASS, MainActivity.SET_PASS);
+        }else{
+            mStatePass = getIntent().getIntExtra(MainActivity.CONDITION_PASS, MainActivity.ENTER_PASS);
+        }
         mSave = (FloatingActionButton) findViewById(R.id.bt_save_pass);
         mSave.setOnClickListener(this);
         mSave.setVisibility(View.INVISIBLE);
@@ -51,25 +59,15 @@ public class LockScreen extends AppCompatActivity implements View.OnClickListene
         mPinLock.attachIndicatorDots(mIndicatorDots);
         mPinLock.setPinLockListener(mPinLockListener);
         mPinLock.setPinLength(4);
-////        mSharedpreferences = getSharedPreferences(FIRST_IN, Context.MODE_PRIVATE);
-////        isFirst = mSharedpreferences.getBoolean(FIRST_IN, true);
-//        Intent i = getIntent();
         if (mStatePass == MainActivity.SET_PASS) { // vao set password lan dau
             initView();
-            mText.setText(R.string.enter_new_password);
+            mText.setText(R.string.set_pass_first);
         } else if (mStatePass == MainActivity.CHANGE_PASS) { // vao de thay doi  password
             initView();
             mText.setText(R.string.enter_old_password);
         } else { // vao de nhap pass
 
         }
-//        if (SET_PASSWORD.equalsIgnoreCase(i.getStringExtra(SET_PASSWORD)) && isFirst == false) {
-//            initView();
-//            mText.setText(R.string.enter_old_password);
-//        }else if (isFirst == true ){
-//            initView();
-//            mText.setText(R.string.enter_new_password);
-//        }
     }
 
     private void initView() {
@@ -92,6 +90,7 @@ public class LockScreen extends AppCompatActivity implements View.OnClickListene
                     isRepeatPass = true;
                     isSave = true;
                     mSave.setVisibility(View.VISIBLE);
+                    isFirst = true;
                 } else if (isRepeatPass == true && pin.equals(mTempPassword) == false) {
                     mSave.setImageResource(R.drawable.reload);
                     mSave.setVisibility(View.VISIBLE);
@@ -104,6 +103,7 @@ public class LockScreen extends AppCompatActivity implements View.OnClickListene
                 if (mPassword.equalsIgnoreCase(pin) == false && isNewPass == false) { // mk cu nhap sai
                     mPinLock.resetPinLockView();
                     Toast.makeText(LockScreen.this, R.string.error_pass, Toast.LENGTH_SHORT).show();
+                    return;
                 } else { // mat khau cu nhap dung
                     if (isNewPass == false) {
                         isNewPass = true;
@@ -159,6 +159,7 @@ public class LockScreen extends AppCompatActivity implements View.OnClickListene
             case R.id.bt_save_pass:
                 isNewPass = false;
                 if (isSave == true) {
+                    String toast = getResources().getString(R.string.set_pass_succes);
                     mPassword = mTempPassword;
                     mEditor = getSharedPreferences(SAVE_PASS, MODE_PRIVATE).edit();
                     mEditor.putString(SAVE_PASS, mPassword);
@@ -173,11 +174,12 @@ public class LockScreen extends AppCompatActivity implements View.OnClickListene
                         mEditor.putBoolean(MainActivity.LOCKSCREEN, true);
                         mEditor.commit();
                         isFirst = false;
+                        toast = getResources().getString(R.string.set_pass);
                         Intent i = new Intent(LockScreen.this, MainActivity.class);
                         startActivity(i);
                         finish();
                     }
-                    Toast.makeText(LockScreen.this, R.string.set_pass_succes, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LockScreen.this, toast, Toast.LENGTH_SHORT).show();
                 } else {
                     mTempPassword = "";
                     mPinLock.resetPinLockView();

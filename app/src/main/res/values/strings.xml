@@ -41,4 +41,6 @@
     <string name="phone_duplicate">Đã có người đăng kí số điện thoại này</string>
     <string name="up_data">Tải dữ liệu lên</string>
     <string name="down_data">Lấy dữ liệu về máy</string>
+    <string name="set_pass">Thiết lập mật khẩu thàng công</string>
+    <string name="set_pass_first">Tạo mới mật khẩu</string>
 </resources>

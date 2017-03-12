@@ -16,7 +16,7 @@
             android:authorities="com.example.anvanthinh.lovediary.database" >
         </provider>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".LockScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".InitActivity"></activity>
-        <activity android:name=".LockScreen"></activity>
+        <activity android:name=".MainActivity"></activity>
         <activity android:name=".ComposeActivity"></activity>
         <service android:name=".SyncService"></service>
 
