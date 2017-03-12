@@ -134,11 +134,9 @@ public class ComposeActivity extends AppCompatActivity implements View.OnClickLi
         storyModel.insert_story(s);
         mTittle.setText("");
         mContent.setText("");
-        mSharedpreferences = getSharedPreferences(SignInFragment.ACCOUNT, Context.MODE_PRIVATE);
-        String mNameAccount = mSharedpreferences.getString(SignInFragment.ACCOUNT_NAME, "");
         Intent intent1 = new Intent(this, SyncService.class);
         intent1.setAction(SyncService.UPLOAD);
-        intent1.putExtra(SyncService.NAME_ACCOUNT, mNameAccount);
+        intent1.putExtra(SyncService.NAME_ACCOUNT, name);
         startService(intent1);
         super.onBackPressed();
     }

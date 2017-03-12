@@ -1,6 +1,8 @@
 package com.example.anvanthinh.lovediary;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,8 +11,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,17 +35,33 @@ public class StoryListFragment extends Fragment implements View.OnClickListener,
     private RecyclerView.LayoutManager mLayoutManager;
     private LinearLayout mLinearList;
     private StoryAdapter mAdapter;
+    private SwipeRefreshLayout mRefesh;
+    private SharedPreferences mSharedpreferences;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.story_list_fragment, container, false);
+        mSharedpreferences = getActivity().getSharedPreferences(SignInFragment.ACCOUNT, Context.MODE_PRIVATE);
+        final String nameAcc = mSharedpreferences.getString(SignInFragment.ACCOUNT_NAME, "");
         mButtonCompose = (FloatingActionButton)v.findViewById(R.id.bt_compose);
         mListStories = (RecyclerView)v.findViewById(R.id.story_listView);
+        mRefesh = (SwipeRefreshLayout)v.findViewById(R.id.swipeRefreshLayout);
         mLinearList = (LinearLayout) v.findViewById(R.id.list);
         mListStories.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mListStories.setLayoutManager(mLayoutManager);
+        mRefesh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.d("thinhavb" , "refesh");
+                Intent intent2 = new Intent(getActivity(), SyncService.class);
+                intent2.setAction(SyncService.DOWNLOAD);
+                intent2.putExtra(SyncService.NAME_ACCOUNT, nameAcc);
+                getActivity().startService(intent2);
+                mRefesh.setRefreshing(false);
+            }
+        });
         return  v;
     }
 
